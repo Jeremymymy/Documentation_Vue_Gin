@@ -4,58 +4,61 @@ import (
 	"documentation/models"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-var userList = []models.User{}
-
 // Get User
 func FindAllUsers(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, userList)
+	users := models.FindAllUsers()
+	ctx.JSON(http.StatusOK, users)
 }
 
-// Post User
-func PostUser(ctx *gin.Context) {
+// Get User by Id
+func FindByUserId(ctx *gin.Context) {
+	user := models.FindByUserId(ctx.Param("id"))
+	if user.Id == 0 {
+		ctx.JSON(http.StatusNotFound, "Error")
+		return
+	}
+	log.Println("User ->", user)
+	ctx.JSON(http.StatusOK, user)
+}
+
+// Create User
+func CreateUser(ctx *gin.Context) {
 	user := models.User{}
 	err := ctx.BindJSON(&user)
 	if err != nil {
 		ctx.JSON(http.StatusNotAcceptable, "Error : "+err.Error())
 		return
 	}
-	userList = append(userList, user)
-	ctx.JSON(http.StatusOK, "Successfully posted")
+	newUser := models.CreateUser(user)
+	ctx.JSON(http.StatusOK, newUser)
 }
 
 // Delete User
 func DeleteUser(ctx *gin.Context) {
-	userId, _ := strconv.Atoi(ctx.Param("id"))
-	for _, user := range userList {
-		log.Println(user)
-		userList = append(userList[:userId], userList[userId+1:]...)
-		ctx.JSON(http.StatusOK, "Successfully deleted")
+	isDeleted := models.DeleteUser(ctx.Param("id"))
+	if !isDeleted {
+		ctx.JSON(http.StatusNotFound, "Error")
 		return
 	}
-	ctx.JSON(http.StatusNotFound, "Error")
+	ctx.JSON(http.StatusOK, "Successfully")
 }
 
-// Put User
-func PutUser(ctx *gin.Context) {
-	updatedUser := models.User{}
-	err := ctx.BindJSON(&updatedUser)
+// Update User
+func UpdateUser(ctx *gin.Context) {
+	user := models.User{}
+	err := ctx.BindJSON(&user)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, "Error")
 		return
 	}
-	userId, _ := strconv.Atoi(ctx.Param("id"))
-	for key, user := range userList {
-		if user.Id == userId {
-			userList[key] = updatedUser
-			log.Println(userList[key])
-			ctx.JSON(http.StatusOK, "Successfully updated")
-			return
-		}
+	user = models.UpdateUser(ctx.Param("id"), user)
+	if user.Id == 0 {
+		ctx.JSON(http.StatusNotFound, "Error")
+		return
 	}
-	ctx.JSON(http.StatusNotFound, "Error")
+	ctx.JSON(http.StatusOK, user)
 }
