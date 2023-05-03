@@ -10,7 +10,8 @@ func AddUserRouter(rg *gin.RouterGroup) {
 	usersRoute := rg.Group("/users")
 
 	usersRoute.GET("/", services.FindAllUsers)
-	usersRoute.POST("/", services.PostUser)
+	usersRoute.GET("/:id", services.FindByUserId)
+	usersRoute.POST("/", services.CreateUser)
 	usersRoute.DELETE("/:id", services.DeleteUser)
-	usersRoute.PUT("/:id", services.PutUser)
+	usersRoute.PUT("/:id", services.UpdateUser)
 }
