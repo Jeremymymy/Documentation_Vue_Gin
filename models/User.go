@@ -2,7 +2,6 @@ package models
 
 import (
 	"documentation/dbconnect"
-	"log"
 )
 
 type User struct {
@@ -32,14 +31,16 @@ func CreateUser(user User) User {
 func DeleteUser(userId string) bool {
 	var user User
 	result := dbconnect.MySQLcon.Where("id = ?", userId).Delete(&user)
-	log.Println(result)
-	if result.RowsAffected == 0 {
-		return false
-	}
-	return true
+	return result.RowsAffected > 0
 }
 
 func UpdateUser(userId string, user User) User {
 	dbconnect.MySQLcon.Model(&user).Where("id = ?", userId).Updates(user)
+	return user
+}
+
+func CheckUserPassword(email string, password string) User {
+	user := User{}
+	dbconnect.MySQLcon.Where("email = ? and password = ?", email, password).First(&user)
 	return user
 }
