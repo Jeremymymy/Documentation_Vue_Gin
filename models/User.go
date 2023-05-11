@@ -13,7 +13,7 @@ type User struct {
 	Name       string     `json:"Name" binding:"gte=2"`
 	Email      string     `json:"Email" binding:"required,email" gorm:"unique"`
 	Password   string     `json:"Password" binding:"required,min=4"`
-	Department string     `json:"Department" binding:"required"`
+	Department string     `json:"Department" binding:"required,oneof=HR Sales Marketing IT Finance"`
 	PostDocs   []Document `json:"PostDocs" gorm:"foreignKey:DocID"`
 	EditDocs   []Document `json:"EditDocs" gorm:"foreignKey:DocID"`
 	CreatedAt  time.Time  `gorm:"autoCreateTime"`
