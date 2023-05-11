@@ -10,8 +10,8 @@ import (
 var MySQLcon *gorm.DB
 var err error
 
-func DD() {
-	// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
+func init() {
+	// refer htps://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 	dsn := "root:root@tcp(127.0.0.1:3306)/tsmcdocs?charset=utf8mb4&parseTime=True&loc=Local"
 	MySQLcon, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

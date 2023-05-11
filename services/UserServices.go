@@ -15,10 +15,10 @@ func FindAllUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
-// Get User by Id
-func FindByUserId(ctx *gin.Context) {
-	user := models.FindByUserId(ctx.Param("id"))
-	if user.Id == 0 {
+// Get User by Email
+func FindByUserEmail(ctx *gin.Context) {
+	user := models.FindByUserEmail(ctx.Param("email"))
+	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
 	}
@@ -57,7 +57,7 @@ func UpdateUser(ctx *gin.Context) {
 		return
 	}
 	user = models.UpdateUser(ctx.Param("id"), user)
-	if user.Id == 0 {
+	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
 	}
@@ -68,12 +68,13 @@ func UpdateUser(ctx *gin.Context) {
 func LoginUser(ctx *gin.Context) {
 	email := ctx.PostForm("email")
 	password := ctx.PostForm("password")
-	user := models.CheckUserPassword(email, password)
-	if user.Id == 0 {
+	isMatchedPass := models.CheckUserPassword(email, password)
+	if isMatchedPass == false {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
 	}
-	middlewares.SaveSession(ctx, user.Id)
+	user := models.FindByUserEmail(email)
+	middlewares.SaveSession(ctx, user.EmployeeId)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":  "Login Successfully",
 		"User":     user,
@@ -92,7 +93,7 @@ func LogoutUser(ctx *gin.Context) {
 // Check User Session
 func CheckUserSession(ctx *gin.Context) {
 	sessionId := middlewares.GetSession(ctx)
-	if sessionId == 0 {
+	if sessionId == "0" {
 		ctx.JSON(http.StatusUnauthorized, "Error")
 		return
 	}

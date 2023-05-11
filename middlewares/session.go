@@ -32,7 +32,7 @@ func AuthSession() gin.HandlerFunc {
 }
 
 // Save Session for User
-func SaveSession(ctx *gin.Context, userID int) {
+func SaveSession(ctx *gin.Context, userID string) {
 	session := sessions.Default(ctx)
 	session.Set(userkey, userID)
 	session.Save()
@@ -46,13 +46,13 @@ func ClearSession(ctx *gin.Context) {
 }
 
 // Get Session for User
-func GetSession(ctx *gin.Context) int {
+func GetSession(ctx *gin.Context) string {
 	session := sessions.Default(ctx)
 	sessionID := session.Get(userkey)
 	if sessionID == nil {
-		return 0
+		return "0"
 	}
-	return sessionID.(int)
+	return sessionID.(string)
 }
 
 // Check Session for User
