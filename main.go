@@ -13,6 +13,7 @@ func main() {
 	router := gin.Default()
 	home := router.Group("/TSMC")
 	src.AddUserRouter(home)
+	src.AddDocRouter(home)
 
 	db := dbconnect.MySQLcon
 
