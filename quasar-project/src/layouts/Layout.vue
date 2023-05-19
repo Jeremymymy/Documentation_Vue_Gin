@@ -16,17 +16,18 @@
       <q-btn flat round dense icon="search" />
       <div class="q-pa-md">
     <q-btn-dropdown
-      class="glossy"
+      glossy
       color="dark"
       label="Account"
+      background-color="black"
     >
     <div class="row no-wrap q-pa-md">
-        <div class="column items-center">
+        <div class="column items-center" >
           <q-avatar size="72px">
             <img src="https://cdn.quasar.dev/img/boy-avatar.png">
           </q-avatar>
 
-          <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+          <div class="text-subtitle1 q-mt-md q-mb-xs">{{ name }}</div>
           <q-btn
             color="dark"
             label="基本資料"
@@ -36,10 +37,11 @@
           /><br/>
           <q-btn
             color="dark"
-            label="Logout"
+            label="登出"
             push
             size="sm"
             v-close-popup
+            router-link to="/"
           />
           </div>
       </div>
@@ -65,3 +67,16 @@
 
   </q-layout>
 </template>
+
+<script>
+import { useUserStore } from 'src/stores/user';
+export default {
+  setup () {
+    const userStore = useUserStore();
+    return {
+    // 导出需要在模板中使用的属性或方法
+      name: userStore.name
+    };
+  }
+}
+</script>

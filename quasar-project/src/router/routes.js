@@ -9,9 +9,10 @@ const routes = [
   },
   {
     path: '/index',
+    name: 'index',
     component: () => import('layouts/Layout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index/Index2.vue') }
+      { path: '', name: 'index_child', component: () => import('pages/Index/Index2.vue') }
     ]
   },
   {
