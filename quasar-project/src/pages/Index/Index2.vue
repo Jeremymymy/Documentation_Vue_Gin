@@ -168,8 +168,9 @@
 
 <script>
 import { ref } from 'vue'
-
 export default {
+  name: 'Index2',
+  props: ['data'],
   setup () {
     return {
       expanded: ref(false),

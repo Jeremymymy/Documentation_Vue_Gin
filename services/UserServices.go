@@ -66,8 +66,15 @@ func UpdateUser(ctx *gin.Context) {
 
 // Login User
 func LoginUser(ctx *gin.Context) {
-	email := ctx.PostForm("email")
-	password := ctx.PostForm("password")
+	var jsonData map[string]interface{}
+	if err := ctx.ShouldBindJSON(&jsonData); err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	email, _ := jsonData["email"].(string)
+	password, _ := jsonData["password"].(string)
+	println("fuck", email)
 	isMatchedPass := models.CheckUserPassword(email, password)
 	if isMatchedPass == false {
 		ctx.JSON(http.StatusNotFound, "Error")
