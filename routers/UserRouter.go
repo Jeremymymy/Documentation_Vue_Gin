@@ -10,9 +10,9 @@ import (
 func AddUserRouter(rg *gin.RouterGroup) {
 	usersRoute := rg.Group("/users", session.SetSession())
 
-	usersRoute.GET("/", services.FindAllUsers)
-	usersRoute.GET("/:email", services.FindByUserEmail)
-	usersRoute.POST("/", services.CreateUser)
+	usersRoute.GET("/getAll", services.FindAllUsers)
+	usersRoute.GET("/:id", services.FindByUserId)
+	usersRoute.POST("/register", services.CreateUser)
 	usersRoute.POST("/login", services.LoginUser)
 	usersRoute.GET("/check", services.CheckUserSession)
 
