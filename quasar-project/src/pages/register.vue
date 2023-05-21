@@ -85,7 +85,7 @@ export default {
       };
       console.log(user)
       axios
-        .post('http://localhost:8000/TSMC/users/', user)
+        .post('http://localhost:8000/TSMC/users/register', user)
         .then(response => {
           console.log(response.data);
           // Handle successful registration

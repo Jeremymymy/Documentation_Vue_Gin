@@ -10,16 +10,12 @@ import (
 func AddDocRouter(rg *gin.RouterGroup) {
 	docsRoute := rg.Group("/docs", session.SetSession())
 
-	docsRoute.GET("/", services.FindAllUsers)
-	// docsRoute.GET("/:email", services.FindByUserEmail)
-	// docsRoute.POST("/", services.CreateUser)
-	// docsRoute.POST("/login", services.LoginUser)
-	// docsRoute.GET("/check", services.CheckUserSession)
+	// docsRoute.GET("/", services.FindAllUsers)
 
-	// docsRoute.Use(session.AuthSession())
-	// {
-	// 	docsRoute.DELETE("/:id", services.DeleteUser)
-	// 	docsRoute.PUT("/:id", services.UpdateUser)
-	// 	docsRoute.GET("/logout", services.LogoutUser)
-	// }
+	docsRoute.Use(session.AuthSession())
+	{
+		docsRoute.POST("/createDoc", services.CreateDoc)
+		// 	docsRoute.DELETE("/:id", services.DeleteUser)
+		// 	docsRoute.PUT("/:id", services.UpdateUser)
+	}
 }

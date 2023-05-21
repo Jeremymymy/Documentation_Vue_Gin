@@ -15,9 +15,9 @@ func FindAllUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, users)
 }
 
-// Get User by Email
-func FindByUserEmail(ctx *gin.Context) {
-	user := models.FindByUserEmail(ctx.Param("email"))
+// Get User by Id
+func FindByUserId(ctx *gin.Context) {
+	user := models.FindByUserId(ctx.Param("id"))
 	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
@@ -29,13 +29,15 @@ func FindByUserEmail(ctx *gin.Context) {
 // Create User
 func CreateUser(ctx *gin.Context) {
 	user := models.User{}
-	err := ctx.BindJSON(&user)
-	if err != nil {
+	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(http.StatusNotAcceptable, "Error : "+err.Error())
 		return
 	}
 	newUser := models.CreateUser(user)
-	ctx.JSON(http.StatusOK, newUser)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Regist Successfully",
+		"User":    newUser,
+	})
 }
 
 // Delete User
@@ -51,12 +53,11 @@ func DeleteUser(ctx *gin.Context) {
 // Update User
 func UpdateUser(ctx *gin.Context) {
 	user := models.User{}
-	err := ctx.BindJSON(&user)
-	if err != nil {
+	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(http.StatusBadRequest, "Error")
 		return
 	}
-	user = models.UpdateUser(ctx.Param("id"), user)
+	user, _ = models.UpdateUser(ctx.Param("id"), user)
 	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
@@ -74,10 +75,9 @@ func LoginUser(ctx *gin.Context) {
 
 	email, _ := jsonData["email"].(string)
 	password, _ := jsonData["password"].(string)
-	println("fuck", email)
 	isMatchedPass := models.CheckUserPassword(email, password)
 	if isMatchedPass == false {
-		ctx.JSON(http.StatusNotFound, "Error")
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Password Not Found"})
 		return
 	}
 	user := models.FindByUserEmail(email)
@@ -105,7 +105,7 @@ func CheckUserSession(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "Check Session Successfully",
-		"User":    sessionId,
+		"message":        "Check Session Successfully",
+		"User_sessionId": sessionId,
 	})
 }
