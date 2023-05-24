@@ -26,6 +26,24 @@ func FindByUserId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+// Get the user's detail info
+func GetMyDetail(ctx *gin.Context) {
+	sessionId := middlewares.GetSession(ctx)
+	if sessionId == "0" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	user, err := models.FindByUserIdWithPostDocsPreload(sessionId)
+	if user.EmployeeId == "" {
+		ctx.JSON(http.StatusNotFound, "User Not Found")
+		return
+	} else if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, user)
+}
+
 // Create User
 func CreateUser(ctx *gin.Context) {
 	user := models.User{}
