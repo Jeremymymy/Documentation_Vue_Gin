@@ -44,6 +44,10 @@ func FindByUserEmail(email string) User {
 	return user
 }
 
+// func GetMyDetail(id string) (User, error) {
+
+// }
+
 func AddNewDoc(user User, newDoc Document) error {
 	user.PostDocs = append(user.PostDocs, newDoc)
 	err := dbconnect.MySQLcon.Save(&user).Error

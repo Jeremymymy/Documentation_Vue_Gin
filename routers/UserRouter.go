@@ -18,6 +18,7 @@ func AddUserRouter(rg *gin.RouterGroup) {
 
 	usersRoute.Use(session.AuthSession())
 	{
+		usersRoute.GET("/getMyDetail", services.GetMyDetail)
 		usersRoute.DELETE("/:id", services.DeleteUser)
 		usersRoute.PUT("/:id", services.UpdateUser)
 		usersRoute.GET("/logout", services.LogoutUser)
