@@ -40,7 +40,7 @@ func CreateDoc(ctx *gin.Context) {
 	ver.Title = newDoc.Title
 	ver.Content = newDoc.Content
 	newVer, _ := models.CreateVer(ver)
-	if err := models.AddNewVer(newDoc, newVer); err != nil {
+	if err := models.DocAddNewVer(newDoc, newVer); err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
 		return
 	}
@@ -49,6 +49,12 @@ func CreateDoc(ctx *gin.Context) {
 		"message": "Document created successfully",
 		"newDoc":  newDoc,
 	})
+}
+
+// Get All stored Versions
+func GetAllVers(ctx *gin.Context) {
+	vers := models.GetAllVers()
+	ctx.JSON(http.StatusOK, vers)
 }
 
 // Get Document by DocId
@@ -74,9 +80,9 @@ func GetDocByIdWithVersPreload(ctx *gin.Context) {
 }
 
 // Delete Document by DocId
-func DeleteDocById(ctx *gin.Context) {
+func DeleteDoc(ctx *gin.Context) {
 	docId, _ := strconv.Atoi(ctx.Param("docId"))
-	isDeleted := models.DeleteDocById(uint(docId))
+	isDeleted := models.DeleteDoc(uint(docId))
 	if !isDeleted {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Fail to delete this doc"})
 		return
@@ -92,7 +98,7 @@ func UpdateDoc(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-	user := models.FindByUserId(sessionId)
+	user, _ := models.FindByUserIdWithEditVersPreload(sessionId)
 	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "Error")
 		return
@@ -111,16 +117,22 @@ func UpdateDoc(ctx *gin.Context) {
 
 	ver := models.Version{}
 	ver.DocId = doc.ID
+	ver.VerNum = len(doc.Vers) + 1
 	ver.UpdaterId = user.EmployeeId
 	ver.UpdaterEmail = user.Email
 	ver.UpdaterName = user.Name
 	ver.Title = doc.Title
 	ver.Content = doc.Content
 	newVer, _ := models.CreateVer(ver)
-	if err := models.AddNewVer(doc, newVer); err != nil {
+	if err := models.DocAddNewVer(doc, newVer); err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
 		return
 	}
+	if err := models.UserAddNewVer(user, newVer); err != nil {
+		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
+		return
+	}
+
 	updatedDoc, err := models.UpdateDoc(uint(docId), doc)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
@@ -128,4 +140,58 @@ func UpdateDoc(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"updatedDoc": updatedDoc})
+}
+
+// Add Collection
+func CollectDoc(ctx *gin.Context) {
+	sessionId := middlewares.GetSession(ctx)
+	if sessionId == "0" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	user, _ := models.FindByUserIdWithCollectDocsPreload(sessionId)
+	if user.EmployeeId == "" {
+		ctx.JSON(http.StatusNotFound, "Error")
+		return
+	}
+
+	docId, _ := strconv.Atoi(ctx.Param("docId"))
+	doc, err := models.GetDocById(uint(docId))
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
+		return
+	}
+	collect := models.Collect{}
+	collect.UserId = user.EmployeeId
+	collect.AuthorId = doc.AuthorId
+	collect.AuthorName = doc.AuthorName
+	collect.Belong = doc.Belong
+	collect.Title = doc.Title
+	collect.Content = doc.Content
+	col, _ := models.CreateCollect(collect)
+	if err := models.UserAddCollect(user, col); err != nil {
+		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"Collect": col,
+		"User":    user,
+	})
+}
+
+// Get All stored Collections
+func GetAllCollects(ctx *gin.Context) {
+	cols := models.GetAllCollects()
+	ctx.JSON(http.StatusOK, cols)
+}
+
+// Delete Collection
+func DeleteCol(ctx *gin.Context) {
+	colId, _ := strconv.Atoi(ctx.Param("colId"))
+	isDeleted := models.DeleteCol(uint(colId))
+	if !isDeleted {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Fail to delete this collect"})
+		return
+	}
+	ctx.JSON(http.StatusOK, "Successfully deleted")
 }

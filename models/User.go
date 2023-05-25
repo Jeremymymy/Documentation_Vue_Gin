@@ -9,15 +9,16 @@ import (
 )
 
 type User struct {
-	EmployeeId string     `json:"EmployeeId" binding:"required" gorm:"primaryKey;index;unique"`
-	Name       string     `json:"Name" binding:"gte=2"`
-	Email      string     `json:"Email" binding:"required,email" gorm:"unique"`
-	Password   string     `json:"Password" binding:"required,min=4"`
-	Department string     `json:"Department" binding:"required,oneof=HR Sales Marketing IT Finance"`
-	PostDocs   []Document `json:"PostDocs" gorm:"foreignKey:AuthorId"`
-	// EditDocs   []Document `json:"EditDocs" gorm:"foreignKey:AuthorId"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	EmployeeId  string     `json:"EmployeeId" binding:"required" gorm:"primaryKey;index;unique"`
+	Name        string     `json:"Name" binding:"gte=2"`
+	Email       string     `json:"Email" binding:"required,email" gorm:"unique"`
+	Password    string     `json:"Password" binding:"required,min=4"`
+	Department  string     `json:"Department" binding:"required,oneof=HR Sales Marketing IT Finance"`
+	PostDocs    []Document `json:"PostDocs" gorm:"foreignKey:AuthorId"`
+	EditVers    []Version  `json:"EditVers" gorm:"foreignKey:UpdaterId"`
+	CollectDocs []Collect  `json:"CollectDocs" gorm:"foreignKey:UserId"`
+	CreatedAt   time.Time  `gorm:"autoCreateTime"`
+	UpdatedAt   time.Time  `gorm:"autoUpdateTime"`
 }
 
 func FindAllUsers() []User {
@@ -32,9 +33,27 @@ func FindByUserId(id string) User {
 	return user
 }
 
+func FindByUserIdWithPreload(id string) (User, error) {
+	var user User
+	err := dbconnect.MySQLcon.Preload("PostDocs").Preload("CollectDocs").First(&user, id).Error
+	return user, err
+}
+
 func FindByUserIdWithPostDocsPreload(id string) (User, error) {
 	var user User
 	err := dbconnect.MySQLcon.Preload("PostDocs").First(&user, id).Error
+	return user, err
+}
+
+func FindByUserIdWithEditVersPreload(id string) (User, error) {
+	var user User
+	err := dbconnect.MySQLcon.Preload("EditVers").First(&user, id).Error
+	return user, err
+}
+
+func FindByUserIdWithCollectDocsPreload(id string) (User, error) {
+	var user User
+	err := dbconnect.MySQLcon.Preload("CollectDocs").First(&user, id).Error
 	return user, err
 }
 
@@ -50,6 +69,18 @@ func FindByUserEmail(email string) User {
 
 func AddNewDoc(user User, newDoc Document) error {
 	user.PostDocs = append(user.PostDocs, newDoc)
+	err := dbconnect.MySQLcon.Save(&user).Error
+	return err
+}
+
+func UserAddNewVer(user User, newVer Version) error {
+	user.EditVers = append(user.EditVers, newVer)
+	err := dbconnect.MySQLcon.Save(&user).Error
+	return err
+}
+
+func UserAddCollect(user User, collect Collect) error {
+	user.CollectDocs = append(user.CollectDocs, collect)
 	err := dbconnect.MySQLcon.Save(&user).Error
 	return err
 }

@@ -33,7 +33,7 @@ func GetMyDetail(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-	user, err := models.FindByUserIdWithPostDocsPreload(sessionId)
+	user, err := models.FindByUserIdWithPreload(sessionId)
 	if user.EmployeeId == "" {
 		ctx.JSON(http.StatusNotFound, "User Not Found")
 		return
