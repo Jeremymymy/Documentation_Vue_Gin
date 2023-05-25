@@ -2,7 +2,6 @@ package models
 
 import (
 	"documentation/dbconnect"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,14 +17,24 @@ type Document struct {
 }
 
 type Version struct {
-	Id           uint      `json:"Id" gorm:"primaryKey;autoIncrement"`
-	DocId        uint      `json:"DocId" gorm:"not null"`
-	UpdaterId    string    `json:"UpdaterId" binding:"required" gorm:"not null"`
-	UpdaterEmail string    `json:"UpdaterEmail" binding:"required" gorm:"not null"`
-	UpdaterName  string    `json:"UpdaterName" binding:"required" gorm:"not null"`
-	Title        string    `json:"Title" binding:"required" gorm:"not null"`
-	Content      string    `json:"Content" binding:"required"`
-	CreatedAt    time.Time `gorm:"autoCreateTime"`
+	gorm.Model
+	DocId        uint   `json:"DocId" gorm:"not null"`
+	VerNum       int    `json:"VerNum" gorm:"default:1"`
+	UpdaterId    string `json:"UpdaterId" binding:"required" gorm:"type:varchar(255);not null;index"`
+	UpdaterEmail string `json:"UpdaterEmail" binding:"required" gorm:"not null"`
+	UpdaterName  string `json:"UpdaterName" binding:"required" gorm:"not null"`
+	Title        string `json:"Title" binding:"required" gorm:"not null"`
+	Content      string `json:"Content" binding:"required"`
+}
+
+type Collect struct {
+	gorm.Model
+	UserId     string `json:"UserId" gorm:"type:varchar(255);size:255;not null"`
+	AuthorId   string `json:"AuthorId" gorm:"type:varchar(255);not null"`
+	AuthorName string `json:"AuthorName" gorm:"not null"`
+	Belong     string `json:"Belong"`
+	Title      string `json:"Title" binding:"required" gorm:"not null"`
+	Content    string `json:"Content" binding:"required"`
 }
 
 func CreateDoc(doc Document) (Document, error) {
@@ -45,7 +54,7 @@ func GetDocByIdWithVersPreload(docId uint) (Document, error) {
 	return doc, err
 }
 
-func DeleteDocById(docId uint) bool {
+func DeleteDoc(docId uint) bool {
 	var doc Document
 	result := dbconnect.MySQLcon.Table("documents").Where("id = ?", docId).Delete(&doc)
 	return result.RowsAffected > 0
@@ -61,8 +70,31 @@ func CreateVer(ver Version) (Version, error) {
 	return ver, err
 }
 
-func AddNewVer(doc Document, newVer Version) error {
+func DocAddNewVer(doc Document, newVer Version) error {
 	doc.Vers = append(doc.Vers, newVer)
 	err := dbconnect.MySQLcon.Save(&doc).Error
 	return err
+}
+
+func GetAllVers() []Version {
+	var vers []Version
+	dbconnect.MySQLcon.Find(&vers)
+	return vers
+}
+
+func CreateCollect(collect Collect) (Collect, error) {
+	err := dbconnect.MySQLcon.Create(&collect).Error
+	return collect, err
+}
+
+func GetAllCollects() []Collect {
+	var cols []Collect
+	dbconnect.MySQLcon.Find(&cols)
+	return cols
+}
+
+func DeleteCol(colId uint) bool {
+	var col Collect
+	result := dbconnect.MySQLcon.Table("collects").Where("id = ?", colId).Delete(&col)
+	return result.RowsAffected > 0
 }

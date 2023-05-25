@@ -23,7 +23,7 @@ func main() {
 	src.AddDocRouter(home)
 
 	db := dbconnect.MySQLcon
-	err := db.AutoMigrate(&models.User{}, &models.Document{}, &models.Version{})
+	err := db.AutoMigrate(&models.User{}, &models.Document{}, &models.Version{}, &models.Collect{})
 	if err != nil {
 		log.Fatal(err)
 	}
