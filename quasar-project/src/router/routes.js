@@ -23,6 +23,13 @@ const routes = [
     ]
   },
   {
+    path: '/MyHistory',
+    component: () => import('layouts/Layout.vue'),
+    children: [
+      { path: '', component: () => import('pages/MyHistory.vue') }
+    ]
+  },
+  {
     path: '/login',
     component: () => import('pages/login.vue')
   },
