@@ -9,11 +9,11 @@ import (
 )
 
 type User struct {
-	EmployeeId  string     `json:"EmployeeId" binding:"required" gorm:"primaryKey;index;unique"`
+	EmployeeId  string     `json:"EmployeeId" gorm:"primaryKey;index;unique"`
 	Name        string     `json:"Name" binding:"gte=2"`
 	Email       string     `json:"Email" binding:"required,email" gorm:"unique"`
 	Password    string     `json:"Password" binding:"required,min=4"`
-	Department  string     `json:"Department" binding:"required,oneof=HR Sales Marketing IT Finance"`
+	Department  string     `json:"Department" binding:"oneof=HR Sales Marketing IT Finance"`
 	PostDocs    []Document `json:"PostDocs" gorm:"foreignKey:AuthorId"`
 	EditVers    []Version  `json:"EditVers" gorm:"foreignKey:UpdaterId"`
 	CollectDocs []Collect  `json:"CollectDocs" gorm:"foreignKey:UserId"`
@@ -35,7 +35,7 @@ func FindByUserId(id string) User {
 
 func FindByUserIdWithPreload(id string) (User, error) {
 	var user User
-	err := dbconnect.MySQLcon.Preload("PostDocs").Preload("CollectDocs").First(&user, id).Error
+	err := dbconnect.MySQLcon.Preload("PostDocs").Preload("EditVers").Preload("CollectDocs").First(&user, id).Error
 	return user, err
 }
 
