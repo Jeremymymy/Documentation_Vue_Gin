@@ -68,19 +68,32 @@ func DeleteUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "Successfully")
 }
 
-// Update User
+// Update User. Only Email, Password, and Name are allowed to update.
 func UpdateUser(ctx *gin.Context) {
-	user := models.User{}
-	if err := ctx.BindJSON(&user); err != nil {
-		ctx.JSON(http.StatusBadRequest, "Error")
+	sessionId := middlewares.GetSession(ctx)
+	if sessionId == "0" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
-	user, _ = models.UpdateUser(ctx.Param("id"), user)
+	user, _ := models.FindByUserIdWithCollectDocsPreload(sessionId)
 	if user.EmployeeId == "" {
-		ctx.JSON(http.StatusNotFound, "Error")
+		ctx.JSON(http.StatusNotFound, "User not found")
 		return
 	}
-	ctx.JSON(http.StatusOK, user)
+
+	updateUser := models.User{}
+	updateUser.EmployeeId = user.EmployeeId
+	updateUser.Department = user.Department
+	if err := ctx.BindJSON(&updateUser); err != nil {
+		ctx.JSON(http.StatusBadRequest, "Error : "+err.Error())
+		return
+	}
+	updateUser, _ = models.UpdateUser(ctx.Param("id"), updateUser)
+	if updateUser.EmployeeId == "" {
+		ctx.JSON(http.StatusNotFound, "User not found to update")
+		return
+	}
+	ctx.JSON(http.StatusOK, updateUser)
 }
 
 // Login User
