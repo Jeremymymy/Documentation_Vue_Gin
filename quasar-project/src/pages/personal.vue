@@ -93,7 +93,7 @@
     </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
+      <div class=" q-pa-md row section-card items-start q-gutter-md col justify-center"  align="center">
       <q-card class="my-card" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
         <!-- <q-img
           src="https://cdn.quasar.dev/img/parallax2.jpg"
@@ -115,8 +115,8 @@
           <q-btn flat round color="teal" icon="delete" />
         </q-card-actions>
       </q-card>
-
-      <div class="q-pa-lg flex flex-center">
+      </div>
+      <div class="q-pa-lg flex flex-center justify-center">
         <q-pagination
           v-model="currentDoc"
           :min="1"
@@ -125,32 +125,34 @@
           input-class="text-orange-10"
         />
       </div>
-      </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
-        <!-- <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        /> -->
-        <q-card-actions align="left">
-          <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
-        </q-card-actions>
+      <div class=" q-pa-md row section-card items-start q-gutter-md col justify-center"  align="center">
+      <!-- <div class="q-pa-lg center row"> -->
+        <q-card class="my-card" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
+          <!-- <q-img
+            src="https://cdn.quasar.dev/img/parallax2.jpg"
+          /> -->
+          <q-card-actions align="left">
+            <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
+          </q-card-actions>
 
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
-          <div class="text-caption text-grey">
-            {{ item.Content }}
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat round color="primary" icon="edit" />
-          <q-btn flat round color="teal" icon="delete" />
-        </q-card-actions>
-      </q-card>
-
-      <div class="q-pa-lg flex flex-center">
+          <q-card-section>
+            <div class="text-overline text-orange-9">Overline</div>
+            <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+            <div class="text-caption text-grey">
+              {{ item.Content }}
+            </div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat round color="primary" icon="edit" />
+            <q-btn flat round color="teal" icon="delete" />
+          </q-card-actions>
+        </q-card>
+      </div>
+      <!-- </div> -->
+      <!-- <q-card-section> -->
+      <div class="q-pa-lg center row justify-center">
         <q-pagination
           v-model="currentCollect"
           :min="1"
@@ -159,7 +161,8 @@
           input-class="text-orange-10"
         />
       </div>
-      </div>
+      <!-- </q-card-section> -->
+      <!-- </div> -->
 
 </template>
 
@@ -170,7 +173,7 @@ import axios from 'axios';
 // import { useQuasar } from 'quasar'
 import { LocalStorage, SessionStorage } from 'quasar';
 // import { useQuasar } from 'quasar';
-const userInfo = useUserStore();
+// const userInfo = useUserStore();
 export default {
   name: 'personal',
   setup () {
@@ -300,6 +303,7 @@ export default {
     function modify () {
       const userStore = useUserStore();
       const value = SessionStorage.getItem('userSession');
+      const value2 = LocalStorage.getItem('userInfo');
 
       console.log(value);
       // config.headers.Authorization = value;
@@ -311,7 +315,7 @@ export default {
       };
       console.log(userM)
       axios
-        .put(`http://localhost:8000/TSMC/users/${userInfo.getUserid}`, userM)
+        .put(`http://localhost:8000/TSMC/users/${value2.EmployeeId}`, userM)
         .then(response => {
           console.log(response);
           console.log(value);
@@ -377,6 +381,23 @@ export default {
           // You can display an error message or perform other actions
         });
     };
+    function deleteDoc (ff) {
+      axios
+        .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
+        .then(response => {
+          console.log(response.data);
+          console.log(value);
+          // Handle successful registration
+          showSuccessMessage = true;
+          getAllUserInfo();
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle registration error
+          // You can display an error message or perform other actions
+        });
+    };
+
     getAllUserInfo();
     console.log(value);
     return {
@@ -411,7 +432,8 @@ export default {
       modify,
       totalPages,
       paginatedDoc,
-      paginatedCol
+      paginatedCol,
+      deleteDoc
     }
   }
 }
