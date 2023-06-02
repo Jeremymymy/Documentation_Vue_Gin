@@ -45,6 +45,9 @@
 <script>
 import axios from 'axios';
 import { useUserStore } from 'src/stores/user';
+// import { useQuasar } from 'quasar';
+import { LocalStorage, SessionStorage } from 'quasar';
+// const $q = useQuasar();
 export default {
   name: 'login',
   data () {
@@ -59,6 +62,7 @@ export default {
   methods: {
     login () {
       const userStore = useUserStore();
+
       // 如果一開始沒有 import axios 的話
       // 用 require("axios").default 也可以讓我們使用 axios
       // const axios = require("axios").default;
@@ -67,7 +71,22 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.statusText === 'OK') {
-            userStore.login({ name: res.data.User.Name, email: res.data.User.Email });
+            // this.user.password
+            userStore.login({ userid: res.data.User.EmployeeId, name: res.data.User.Name, email: res.data.User.Email, password: '$2a$10$/duU/Q6c2x.iPH5aQcngEOMo1iE5lgaFRolfj9I5o0cOLn/Px2m/i', session: res.data.Sessions, department: res.data.User.Department });
+
+            try {
+              LocalStorage.set('userInfo', res.data.User)
+              SessionStorage.set('userSession', res.data.Sessions)
+              const value = SessionStorage.getItem('userSession')
+              const value2 = LocalStorage.getItem('userInfo')
+
+              console.log(value)
+              console.log(value2)
+            } catch (e) {
+              // 由于Web Storage API错误，
+              // 数据未成功保存
+              console.log(e)
+            }
             console.log(res.data.User.Name)
             // 登录成功，进行页面跳转
             this.$router.push({

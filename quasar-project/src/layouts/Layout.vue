@@ -10,7 +10,7 @@
 
       <q-toolbar-title>TSMC
       </q-toolbar-title>
-      <q-btn flat class="q-mr-md" label ="發表文件" ></q-btn>
+      <q-btn flat class="q-mr-md" label ="發表文件"  router-link to="/personal"></q-btn>
       <q-btn flat class="q-mr-md" label ="管理文件" ></q-btn>
       <q-btn flat class="q-mr-md" label ="收藏文件" ></q-btn>
       <q-btn flat round dense icon="search" />
@@ -34,6 +34,7 @@
             push
             size="sm"
             v-close-popup
+            router-link to="/personal"
           /><br/>
           <q-btn
             color="dark"
@@ -42,6 +43,7 @@
             size="sm"
             v-close-popup
             router-link to="/"
+            @click="logout"
           />
           </div>
       </div>
@@ -75,7 +77,11 @@ export default {
     const userStore = useUserStore();
     return {
     // 导出需要在模板中使用的属性或方法
-      name: userStore.name
+      name: userStore.name,
+
+      logout () {
+        sessionStorage.clear()
+      }
     };
   }
 }

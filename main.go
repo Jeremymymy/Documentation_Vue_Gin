@@ -16,6 +16,7 @@ func main() {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:8080"}                   // 允许的域名或IP地址
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"} // 允许的HTTP方法
+	config.AllowCredentials = true
 	router.Use(cors.New(config))
 
 	home := router.Group("/TSMC")
