@@ -72,6 +72,7 @@
 
 <script>
 // import { useUserStore } from 'src/stores/user';
+// import { LocalStorage, SessionStorage } from 'quasar';
 import { LocalStorage } from 'quasar';
 export default {
   setup () {
@@ -82,7 +83,8 @@ export default {
       name: value.Name,
 
       logout () {
-        sessionStorage.clear()
+        LocalStorage.clear()
+        // SessionStorage.clear()
       }
     };
   }

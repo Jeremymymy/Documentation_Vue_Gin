@@ -103,16 +103,19 @@
         </q-card-actions>
 
         <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
+
           <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+          <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
           <div class="text-caption text-grey">
             {{ item.Content }}
           </div>
         </q-card-section>
         <q-card-actions align="right">
            <!-- <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/> -->
-          <q-btn flat round color="primary" icon="edit" />
-          <q-btn flat round color="teal" icon="delete" />
+            <router-link :to="{path: '/detail', query: {docID: item.ID }}">
+              <q-btn flat round color="primary" icon="edit" />
+            </router-link>
+            <q-btn flat round color="teal" icon="delete" @click="deleteDoc(item)" />
         </q-card-actions>
       </q-card>
       </div>
@@ -138,15 +141,15 @@
           </q-card-actions>
 
           <q-card-section>
-            <div class="text-overline text-orange-9">Overline</div>
             <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+            <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
             <div class="text-caption text-grey">
               {{ item.Content }}
             </div>
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat round color="primary" icon="edit" />
-            <q-btn flat round color="teal" icon="delete" />
+            <!-- <q-btn flat round color="teal" icon="delete" /> -->
           </q-card-actions>
         </q-card>
       </div>
@@ -341,25 +344,18 @@ export default {
       allDoc.value.forEach((elem) => {
         if (elem.Title === doc.Title || elem.Title.includes(doc.Title + ' (')) {
           if (elem.Title.includes(' (') && elem.Title.includes(')')) {
-            console.log('abc')
-            let i = 0;
-            let substr = `(${i})`;
-            do {
-              i++;
-              substr = `(${i})`;
-            }
-            while (!elem.Title.includes(substr) && !elem.Title.includes(`(${++i})`));
-            // if (doc.Titlestr.includes(substr))
-            i++;
-            // console.log('ss' + substr)
-            tmpTitle = elem.Title;
-            // console.log('qq ' + tmpTitle)
-            const substrNew = `(${i})`;
-            // console.log('pp' + substrNew);
-            tmpTitle = tmpTitle.replace(substr, substrNew)
-            // console.log(tmpTitle)
+            // console.log('abc ' + elem)
+            const split = elem.Title.split('(')
+            // console.log('length ' + split.length)
+            // console.log('length ' + split[split.length - 1])
+            let index = parseInt(split[split.length - 1], 10);
+            const substr = `(${index})`;
+            const substrNew = `(${++index})`;
+            // console.log('substr ' + substr)
+            // console.log('substrM ' + substrNew)
+            tmpTitle = elem.Title.replace(substr, substrNew)
           } else {
-            // console.log('def')
+            console.log('def')
             tmpTitle = doc.Title + ' (1)';
           }
         }
@@ -385,17 +381,36 @@ export default {
       axios
         .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
         .then(response => {
+          console.log(response);
           console.log(response.data);
-          console.log(value);
-          // Handle successful registration
-          showSuccessMessage = true;
+          allCollect.value.forEach((elemC) => {
+            if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
+              deleteCollect(elemC);
+            }
+          });
           getAllUserInfo();
         })
         .catch(error => {
           console.error(error);
-          // Handle registration error
-          // You can display an error message or perform other actions
         });
+    };
+    function updateDoc (ff) {
+      // router.push('/detail');
+      // axios
+      //   .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
+      //   .then(response => {
+      //     console.log(response);
+      //     console.log(response.data);
+      //     allCollect.value.forEach((elemC) => {
+      //       if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
+      //         deleteCollect(elemC);
+      //       }
+      //     });
+      //     getAllUserInfo();
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
     };
 
     getAllUserInfo();
@@ -433,7 +448,8 @@ export default {
       totalPages,
       paginatedDoc,
       paginatedCol,
-      deleteDoc
+      deleteDoc,
+      updateDoc
     }
   }
 }
