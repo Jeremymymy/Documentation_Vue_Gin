@@ -102,8 +102,13 @@ func DeleteUser(userId string) bool {
 }
 
 func UpdateUser(userId string, user User) (User, error) {
-	err := dbconnect.MySQLcon.Model(&user).Where("employee_id = ?", userId).Updates(user).Error
-	return user, err
+	bytes, err_1 := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err_1 != nil {
+		log.Fatal(err_1)
+	}
+	user.Password = string(bytes)
+	err_2 := dbconnect.MySQLcon.Model(&user).Where("employee_id = ?", userId).Updates(user).Error
+	return user, err_2
 }
 
 func CheckUserPassword(email string, password string) bool {

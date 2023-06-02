@@ -71,13 +71,15 @@
 </template>
 
 <script>
-import { useUserStore } from 'src/stores/user';
+// import { useUserStore } from 'src/stores/user';
+import { LocalStorage } from 'quasar';
 export default {
   setup () {
-    const userStore = useUserStore();
+    // const userStore = useUserStore();
+    const value = LocalStorage.getItem('userInfo');
     return {
     // 导出需要在模板中使用的属性或方法
-      name: userStore.name,
+      name: value.Name,
 
       logout () {
         sessionStorage.clear()

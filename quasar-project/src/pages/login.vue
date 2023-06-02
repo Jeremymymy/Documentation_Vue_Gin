@@ -71,9 +71,10 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.statusText === 'OK') {
-            // this.user.password
-            userStore.login({ userid: res.data.User.EmployeeId, name: res.data.User.Name, email: res.data.User.Email, password: '$2a$10$/duU/Q6c2x.iPH5aQcngEOMo1iE5lgaFRolfj9I5o0cOLn/Px2m/i', session: res.data.Sessions, department: res.data.User.Department });
-
+            // this.user.password '$2a$10$/duU/Q6c2x.iPH5aQcngEOMo1iE5lgaFRolfj9I5o0cOLn/Px2m/i'
+            userStore.login({ userid: res.data.User.EmployeeId, name: res.data.User.Name, email: res.data.User.Email, password: this.user.password, session: res.data.Sessions, department: res.data.User.Department });
+            res.data.User.Password = this.user.password;
+            console.log(res.data.User)
             try {
               LocalStorage.set('userInfo', res.data.User)
               SessionStorage.set('userSession', res.data.Sessions)

@@ -1,7 +1,5 @@
 <template>
-                  <q-form @submit.prevent="getAllUserInfo" class="q-gutter-md">
-                    <q-btn label="確認" color="black" type="submit"/>
-                  </q-form>
+
     <div  class="text-h6 q-pa-sm " align="center"><b class="title"><br/>個人資料</b></div>
 
     <div class="q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
@@ -94,190 +92,15 @@
     </q-form>
     </div>
 
-    <!-- <div class = "row justify-center q-pa-md" align="center"> -->
-    <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
-    <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat round color="red" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round color="gray" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round icon ="favorite" :color="expanded ? 'gray' : 'red'" @click="expanded = !expanded" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round color="gray" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-      <div class="q-pa-lg flex flex-center">
-        <q-pagination
-          v-model="current"
-          :max="5"
-          input
-        />
-      </div>
-    </div>
-
-   <!-- </div> -->
-    <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
-    <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat round color="red" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round color="red" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round color="red" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-       <q-card class="my-card" flat bordered>
-        <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
-
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-          <div class="text-caption text-grey">
-            {{ dName }}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat round color="red" icon="favorite" />
-          <!-- <q-btn flat round color="teal" icon="bookmark" />
-          <q-btn flat round color="primary" icon="share" /> -->
-        </q-card-actions>
-      </q-card>
-      <div class="q-pa-lg flex flex-center">
-        <q-pagination
-          v-model="current"
-          :max="5"
-          input
-        />
-      </div>
-      </div>
-      <!-- <vue-horizontal responsive>
-      <section v-for="item in items" :key="item.title">
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.content }}</p>
-      </section>
-      </vue-horizontal> -->
-      <div  class="text-h6 q-pa-sm " align="center"><b class="title">TEST</b></div>
+      <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
       <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered  v-for="item in allDoc" :key="item.ID">
-        <q-img
+      <q-card class="my-card" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
+        <!-- <q-img
           src="https://cdn.quasar.dev/img/parallax2.jpg"
-        />
+        /> -->
+        <q-card-actions align="left">
+           <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/>
+        </q-card-actions>
 
         <q-card-section>
           <div class="text-overline text-orange-9">Overline</div>
@@ -287,16 +110,53 @@
           </div>
         </q-card-section>
         <q-card-actions align="right">
-           <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"><!--:color="examColour" @click="item.favorite = !item.favorite" -->
-          </q-btn>
+           <!-- <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/> -->
+          <q-btn flat round color="primary" icon="edit" />
+          <q-btn flat round color="teal" icon="delete" />
         </q-card-actions>
       </q-card>
 
       <div class="q-pa-lg flex flex-center">
         <q-pagination
-          v-model="current"
-          :max="5"
-          input
+          v-model="currentDoc"
+          :min="1"
+          :max="Math.ceil(allDoc.length/4)"
+          :input="true"
+          input-class="text-orange-10"
+        />
+      </div>
+      </div>
+
+      <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
+      <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
+      <q-card class="my-card" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
+        <!-- <q-img
+          src="https://cdn.quasar.dev/img/parallax2.jpg"
+        /> -->
+        <q-card-actions align="left">
+          <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
+        </q-card-actions>
+
+        <q-card-section>
+          <div class="text-overline text-orange-9">Overline</div>
+          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+          <div class="text-caption text-grey">
+            {{ item.Content }}
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat round color="primary" icon="edit" />
+          <q-btn flat round color="teal" icon="delete" />
+        </q-card-actions>
+      </q-card>
+
+      <div class="q-pa-lg flex flex-center">
+        <q-pagination
+          v-model="currentCollect"
+          :min="1"
+          :max="Math.ceil(allCollect.length/4)"
+          :input="true"
+          input-class="text-orange-10"
         />
       </div>
       </div>
@@ -311,179 +171,143 @@ import axios from 'axios';
 import { LocalStorage, SessionStorage } from 'quasar';
 // import { useQuasar } from 'quasar';
 const userInfo = useUserStore();
-
 export default {
   name: 'personal',
   setup () {
     const value = SessionStorage.getItem('userSession');
     const value2 = LocalStorage.getItem('userInfo');
+    const expanded = ref(false);
+    const slide = ref('style');
+    const autoplay = ref(true);
+    const dialog = ref(false);
 
-    console.log(value);
-    return {
-      expanded: ref(false),
-      slide: ref('style'),
-      autoplay: ref(true),
-      lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      dialog: ref(false),
+    const userName = ref(value2.Name);
+    const userDep = ref(value2.Department);
+    const userEmail = ref(value2.Email);
+    const userPassword = ref(value2.Password);
+    const userID = ref(value2.EmployeeId);
 
-      items: ref(),
+    const nameM = ref(value2.Name);
+    const emailM = ref(value2.Email);
+    const passwordM = ref(value2.Password);
 
-      exambutton: ref(false),
+    const dName = ref('title');
+    const dContent = ref('content');
 
-      userName: ref(value2.Name),
-      userDep: ref(value2.Department),
-      userEmail: ref(value2.Email),
-      userPassword: ref(value2.Password),
-      userID: ref(value2.EmployeeId),
+    let showSuccessMessage = false;
 
-      nameM: ref(value2.Name),
-      emailM: ref(value2.Email),
-      passwordM: ref(value2.Password),
+    const allDoc = ref('');
+    const allCollect = ref('');
+    const currentCollect = ref(1);
+    const currentDoc = ref(1);
+    const pageSize = 4;
 
-      dName: ref('title'),
-      dContent: ref('content'),
-
-      showSuccessMessage: false,
-
-      allDoc: ref(''),
-      allCollect: ref('')
-    }
-  },
-  computed: {
-    // examColour () {
-    //   this.favorite = !this.favorite
-    //   // return this.items.favorite === false ? 'red' : 'gray'
-    // }
-  },
-  methods: {
-    createCollect (ff) {
+    function totalPages (item) {
+      return Math.ceil(item.length / pageSize);
+    };
+    function paginatedDoc () {
+      const startIndex = (currentDoc.value - 1) * pageSize;
+      return allDoc.value.slice(startIndex, startIndex + pageSize);
+    };
+    function paginatedCol () {
+      const startIndex = (currentCollect.value - 1) * pageSize;
+      return allCollect.value.slice(startIndex, startIndex + pageSize);
+    };
+    function createCollect (ff) {
       ff.favorite = !ff.favorite;
       if (ff.favorite === true) {
         axios
           .get(`http://localhost:8000/TSMC/docs/collectDoc/${ff.ID}`)
           .then(response => {
             console.log(response);
-            this.allCollect = response.data.Collect
-            console.log(this.allCollect);
+            allCollect.value = response.data.Collect
+            console.log(allCollect.value);
+            getAllUserInfo();
           })
           .catch(error => {
             console.error(error);
             // Handle registration error
-            // You can display an error message or perform other actions
           });
       } else {
         console.log('Delete');
-        axios
-          .delete(`http://localhost:8000/TSMC/docs/deleteCollect/${ff.ID}`)
-          .then(response => {
-            console.log(response);
-          })
-          .catch(error => {
-            console.error(error);
-            // Handle registration error
-            // You can display an error message or perform other actions
-          });
+        let colID = null;
+        allCollect.value.forEach((elem) => {
+          if (ff.Title === elem.Title) {
+            colID = elem.ID
+          }
+        });
+        if (colID !== null) {
+          axios
+            .delete(`http://localhost:8000/TSMC/docs/deleteCollect/${colID}`)
+            .then(response => {
+              console.log(response);
+              getAllUserInfo();
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }
       }
-    },
-    getAllUserInfo () {
+    };
+    function getAllUserInfo () {
       axios
         .get('http://localhost:8000/TSMC/users/getMyDetail')
         .then(response => {
           console.log(response);
-          this.allDoc = response.data.PostDocs;
-          this.allCollect = response.data.CollectDocs;
-          // this.items = response.data.PostDocs;
-          this.allDoc.forEach((elem) => {
-            elem.favorite = false;
+
+          allDoc.value = response.data.PostDocs;
+          allCollect.value = response.data.CollectDocs;
+          console.log(allCollect.value.length);
+          allDoc.value.forEach((elem) => {
+            // elem.page =
+            allCollect.value.forEach((elemC) => {
+              // console.log(elem);
+              // console.log(elemC.Title);
+              if (elemC.Title !== elem.Title && elem.favorite !== true) {
+                elem.favorite = false;
+                // console.log('yes');
+              } else {
+                elem.favorite = true;
+                // console.log('no');
+              }
+            });
           });
 
-          console.log(this.allDoc);
-          console.log(this.allCollect);
-          // userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-          // Handle successful registration
-          // LocalStorage.set('userInfo', response.data)
-          // this.showSuccessMessage = true;
-          // window.location.reload();
-          // You can redirect the user or show a success message
+          console.log(allDoc.value);
+          console.log(allCollect.value);
         })
         .catch(error => {
           console.error(error);
           // Handle registration error
           // You can display an error message or perform other actions
         });
-    },
-    // deleteDoc () {
-    //   axios
-    //     .put(`http://localhost:8000/TSMC/users/${userInfo.getUserid}`, userM)
-    //     .then(response => {
-    //       console.log(response);
-    //       console.log(value);
-
-    //       userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-    //       // Handle successful registration
-    //       LocalStorage.set('userInfo', response.data)
-    //       this.showSuccessMessage = true;
-    //       window.location.reload();
-    //       // You can redirect the user or show a success message
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //       // Handle registration error
-    //       // You can display an error message or perform other actions
-    //     });
-    // },
-    // getAllCollect () {
-    //   axios
-    //     .put(`http://localhost:8000/TSMC/users/${userInfo.getUserid}`, userM)
-    //     .then(response => {
-    //       console.log(response);
-    //       console.log(value);
-
-    //       userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-    //       // Handle successful registration
-    //       LocalStorage.set('userInfo', response.data)
-    //       this.showSuccessMessage = true;
-    //       window.location.reload();
-    //       // You can redirect the user or show a success message
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //       // Handle registration error
-    //       // You can display an error message or perform other actions
-    //     });
-    // },
-
-    // deleteCollect () {
-    //   axios
-    //     .put(`http://localhost:8000/TSMC/users/${userInfo.getUserid}`, userM)
-    //     .then(response => {
-    //       console.log(response);
-    //       console.log(value);
-
-    //       userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-    //       // Handle successful registration
-    //       LocalStorage.set('userInfo', response.data)
-    //       this.showSuccessMessage = true;
-    //       window.location.reload();
-    //       // You can redirect the user or show a success message
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //       // Handle registration error
-    //       // You can display an error message or perform other actions
-    //     });
-    // },
-    modify () {
+    };
+    function deleteCollect (ff) {
+      // ff.favorite = !ff.favorite;
+      console.log('Delete');
+      axios
+        .delete(`http://localhost:8000/TSMC/docs/deleteCollect/${ff.ID}`)
+        .then(response => {
+          console.log(response);
+          getAllUserInfo();
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle registration error
+          // You can display an error message or perform other actions
+        });
+    };
+    function modify () {
       const userStore = useUserStore();
       const value = SessionStorage.getItem('userSession');
 
       console.log(value);
       // config.headers.Authorization = value;
       const userM = {
-        id: this.userID,
-        Name: this.nameM,
-        Email: this.emailM,
-        Password: this.passwordM
+        id: userID.value,
+        Name: nameM.value,
+        Email: emailM.value,
+        Password: passwordM.value
       };
       console.log(userM)
       axios
@@ -491,28 +315,52 @@ export default {
         .then(response => {
           console.log(response);
           console.log(value);
-
           userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-          // Handle successful registration
+
           LocalStorage.set('userInfo', response.data)
-          this.showSuccessMessage = true;
+          showSuccessMessage = true;
           window.location.reload();
-          // You can redirect the user or show a success message
         })
         .catch(error => {
           console.error(error);
-          // Handle registration error
-          // You can display an error message or perform other actions
         });
-    },
-    createDoc () {
+    };
+    function createDoc () {
       const value = SessionStorage.getItem('userSession')
       console.log(value);
       // config.headers.Authorization = value;
       const doc = {
-        Title: this.dName,
-        Content: this.dContent
+        Title: dName.value,
+        Content: dContent.value
       };
+      let tmpTitle = doc.Title;
+      allDoc.value.forEach((elem) => {
+        if (elem.Title === doc.Title || elem.Title.includes(doc.Title + ' (')) {
+          if (elem.Title.includes(' (') && elem.Title.includes(')')) {
+            console.log('abc')
+            let i = 0;
+            let substr = `(${i})`;
+            do {
+              i++;
+              substr = `(${i})`;
+            }
+            while (!elem.Title.includes(substr) && !elem.Title.includes(`(${++i})`));
+            // if (doc.Titlestr.includes(substr))
+            i++;
+            // console.log('ss' + substr)
+            tmpTitle = elem.Title;
+            // console.log('qq ' + tmpTitle)
+            const substrNew = `(${i})`;
+            // console.log('pp' + substrNew);
+            tmpTitle = tmpTitle.replace(substr, substrNew)
+            // console.log(tmpTitle)
+          } else {
+            // console.log('def')
+            tmpTitle = doc.Title + ' (1)';
+          }
+        }
+      });
+      doc.Title = tmpTitle
       console.log(doc)
       axios
         .post('http://localhost:8000/TSMC/docs/createDoc', doc)
@@ -520,17 +368,52 @@ export default {
           console.log(response.data);
           console.log(value);
           // Handle successful registration
-          this.showSuccessMessage = true;
-          // You can redirect the user or show a success message
+          showSuccessMessage = true;
+          getAllUserInfo();
         })
         .catch(error => {
           console.error(error);
           // Handle registration error
           // You can display an error message or perform other actions
         });
+    };
+    getAllUserInfo();
+    console.log(value);
+    return {
+      currentDoc,
+      currentCollect,
+      expanded,
+      slide,
+      autoplay,
+      dialog,
+
+      userName,
+      userDep,
+      userEmail,
+      userPassword,
+      userID,
+
+      nameM,
+      emailM,
+      passwordM,
+
+      dName,
+      dContent,
+
+      showSuccessMessage,
+
+      allDoc,
+      allCollect,
+      getAllUserInfo,
+      createCollect,
+      deleteCollect,
+      createDoc,
+      modify,
+      totalPages,
+      paginatedDoc,
+      paginatedCol
     }
   }
-
 }
 </script>
 
