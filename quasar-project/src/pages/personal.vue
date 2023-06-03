@@ -1,12 +1,11 @@
 <template>
-
     <div  class="text-h6 q-pa-sm " align="center"><b class="title"><br/>個人資料</b></div>
 
     <div class="q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
     <q-card class="my-card-info "  >
       <q-card-section horizontal>
         <q-img class="col-5" src="https://cdn.quasar.dev/img/boy-avatar.png"/>
-
+        <!-- https://cdn.quasar.dev/img/avatar.png -->
         <q-card-section>
           <div class="col-5 ">
             <div class="row">
@@ -104,7 +103,7 @@
 
         <q-card-section>
 
-          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title }}</div>
           <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
           <div class="text-caption text-grey">
             {{ item.Content }}
@@ -115,7 +114,19 @@
             <router-link :to="{path: '/detail', query: {docID: item.ID }}">
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
-            <q-btn flat round color="teal" icon="delete" @click="deleteDoc(item)" />
+
+            <q-btn flat round color="teal" icon="delete" @click="dialogDelete = !dialogDelete" >
+              <q-dialog v-model="dialogDelete">
+                <q-card class="my-card-info-fix q-pa-md" align="center">
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
+
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                </q-card>
+              </q-dialog>
+            </q-btn>
         </q-card-actions>
       </q-card>
       </div>
@@ -148,8 +159,11 @@
             </div>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat round color="primary" icon="edit" />
+            <!-- <q-btn flat round color="primary" icon="edit" /> -->
             <!-- <q-btn flat round color="teal" icon="delete" /> -->
+            <router-link :to="{path: '/detail', query: {docID: getDocID(item.ID) }}">
+              <q-btn flat round color="primary" icon="edit" />
+            </router-link>
           </q-card-actions>
         </q-card>
       </div>
@@ -207,6 +221,8 @@ export default {
     const currentCollect = ref(1);
     const currentDoc = ref(1);
     const pageSize = 4;
+
+    const dialogDelete = ref(false);
 
     function totalPages (item) {
       return Math.ceil(item.length / pageSize);
@@ -317,13 +333,22 @@ export default {
         Password: passwordM.value
       };
       console.log(userM)
+
+      if (userM.Name === null) {
+        userM.Name = value2.Name
+      } else if (userM.Email === null) {
+        userM.Email = value2.Email
+      } else if (userM.Password === null) {
+        userM.Password = value2.Password
+      }
+
       axios
         .put(`http://localhost:8000/TSMC/users/${value2.EmployeeId}`, userM)
         .then(response => {
           console.log(response);
           console.log(value);
           userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-
+          response.data.Password = passwordM.value;
           LocalStorage.set('userInfo', response.data)
           showSuccessMessage = true;
           window.location.reload();
@@ -412,6 +437,13 @@ export default {
       //     console.error(error);
       //   });
     };
+    function getDocID (colitem) {
+      // allDoc.value.forEach((elem) => {
+      //   if (colitem.AuthorId === ) {
+
+      //   }
+      // });
+    }
 
     getAllUserInfo();
     console.log(value);
@@ -422,6 +454,7 @@ export default {
       slide,
       autoplay,
       dialog,
+      dialogDelete,
 
       userName,
       userDep,
@@ -449,7 +482,8 @@ export default {
       paginatedDoc,
       paginatedCol,
       deleteDoc,
-      updateDoc
+      updateDoc,
+      getDocID
     }
   }
 }

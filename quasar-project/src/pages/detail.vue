@@ -28,8 +28,22 @@
         />
       </q-card-section>
       <q-separator dark inset />
-      <q-card-section>
-        {{ content }}
+      <q-card-section class="my-doc-content">
+        <div class="col-5 ">
+          <div class="row">
+            <!-- <q-editor id = 'editor' v-model="dContent" class="section-card "
+                :toolbar="[
+                  ['bold', 'italic', 'strike', 'underline'],
+                  ['hr', 'link'],
+                  ['fullscreen']
+                ]"
+            /> -->
+            {{ content }}
+          </div>
+          <div class="row justify-center">
+            <q-btn id = 'editBtn' label="編輯" color="black" type="submit" />
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -50,6 +64,7 @@ export default {
     const author = ref('');
     const date = ref('');
     const version = ref('First');
+    const editflag = ref(false);
 
     function getDoc (id) {
       axios
@@ -66,6 +81,15 @@ export default {
           console.error(error);
         });
     };
+    function edit () {
+      editflag.value = !editflag.value;
+    };
+    // function my (id) {
+    //   return document.getElementById(id);
+    // };
+    // my('editBtn').onclick = function () {
+    //   my('editor').style.display = 'none';
+    // };
     getDoc(route.query.docID);
 
     return {
@@ -74,7 +98,9 @@ export default {
       content,
       author,
       date,
-      version
+      version,
+      editflag,
+      edit
     }
   }
 }
@@ -84,4 +110,8 @@ export default {
   width: 100%
   height: 100%
   max-width: 100%
+.my-doc-content
+  width: 100%
+  height: 100%
+  full-height: 100%
 </style>
