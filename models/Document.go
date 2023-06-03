@@ -33,6 +33,7 @@ type Collect struct {
 	AuthorId   string `json:"AuthorId" gorm:"type:varchar(255);not null"`
 	AuthorName string `json:"AuthorName" gorm:"not null"`
 	Belong     string `json:"Belong"`
+	DocId      uint   `json:"DocId" gorm:"not null"`
 	Title      string `json:"Title" binding:"required" gorm:"not null"`
 	Content    string `json:"Content" binding:"required"`
 }
@@ -52,6 +53,12 @@ func GetDocByIdWithVersPreload(docId uint) (Document, error) {
 	var doc Document
 	err := dbconnect.MySQLcon.Preload("Vers").First(&doc, docId).Error
 	return doc, err
+}
+
+func GetDepartmentDocs(department string) ([]Document, error) {
+	var docs []Document
+	err := dbconnect.MySQLcon.Table("documents").Where("belong = ?", department).Find(&docs).Error
+	return docs, err
 }
 
 func DeleteDoc(docId uint) bool {

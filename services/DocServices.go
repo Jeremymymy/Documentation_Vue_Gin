@@ -79,6 +79,16 @@ func GetDocByIdWithVersPreload(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, doc)
 }
 
+// Get Documents by different Department
+func GetDepartmentDocs(ctx *gin.Context) {
+	docs, err := models.GetDepartmentDocs(ctx.Param("department"))
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, docs)
+}
+
 // Delete Document by DocId
 func DeleteDoc(ctx *gin.Context) {
 	docId, _ := strconv.Atoi(ctx.Param("docId"))
@@ -166,6 +176,7 @@ func CollectDoc(ctx *gin.Context) {
 	collect.AuthorId = doc.AuthorId
 	collect.AuthorName = doc.AuthorName
 	collect.Belong = doc.Belong
+	collect.DocId = doc.ID
 	collect.Title = doc.Title
 	collect.Content = doc.Content
 	col, _ := models.CreateCollect(collect)

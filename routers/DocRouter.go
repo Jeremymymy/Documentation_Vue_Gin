@@ -14,6 +14,7 @@ func AddDocRouter(rg *gin.RouterGroup) {
 	{
 		docsRoute.POST("/createDoc", services.CreateDoc)
 		docsRoute.GET("/getDoc/:docId", services.GetDocById)
+		docsRoute.GET("/getDepartmentDocs/:department", services.GetDepartmentDocs)
 		docsRoute.GET("/getDocAllVers/:docId", services.GetDocByIdWithVersPreload)
 		docsRoute.GET("/getAllVers/", services.GetAllVers)
 		docsRoute.GET("/collectDoc/:docId", services.CollectDoc)
