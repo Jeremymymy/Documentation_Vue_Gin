@@ -92,8 +92,8 @@
     </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md col justify-center"  align="center">
-      <q-card class="my-card" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
+      <div class=" q-pa-md row section-card items-start q-gutter-md justify-center"  align="center">
+      <q-card class="my-card col" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
         <!-- <q-img
           src="https://cdn.quasar.dev/img/parallax2.jpg"
         /> -->
@@ -151,9 +151,9 @@
       </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md col justify-center"  align="center">
+      <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
       <!-- <div class="q-pa-lg center row"> -->
-        <q-card class="my-card" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
+        <q-card class="my-card col" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
           <!-- <q-img
             src="https://cdn.quasar.dev/img/parallax2.jpg"
           /> -->
@@ -171,7 +171,7 @@
           <q-card-actions align="right">
             <!-- <q-btn flat round color="primary" icon="edit" /> -->
             <!-- <q-btn flat round color="teal" icon="delete" /> -->
-            <router-link :to="{path: '/detail', query: {docID: getDocID(item.ID) }}">
+            <router-link :to="{path: '/detail', query: {docID: item.DocId }}">
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
           </q-card-actions>
@@ -207,8 +207,6 @@ export default {
     const value = SessionStorage.getItem('userSession');
     const value2 = LocalStorage.getItem('userInfo');
     const expanded = ref(false);
-    const slide = ref('style');
-    const autoplay = ref(true);
     const dialog = ref(false);
 
     const userName = ref(value2.Name);
@@ -262,7 +260,7 @@ export default {
         console.log('Delete');
         let colID = null;
         allCollect.value.forEach((elem) => {
-          if (ff.Title === elem.Title) {
+          if (ff.ID === elem.DocId) {
             colID = elem.ID
           }
         });
@@ -293,7 +291,7 @@ export default {
             allCollect.value.forEach((elemC) => {
               // console.log(elem);
               // console.log(elemC.Title);
-              if (elemC.Title !== elem.Title && elem.favorite !== true) {
+              if (elemC.DocId !== elem.ID && elem.favorite !== true) { /* && elemC.Title === elem.Title */
                 elem.favorite = false;
                 // console.log('yes');
               } else {
@@ -303,7 +301,7 @@ export default {
               elem.deleteDialog = false;
             });
           });
-
+          LocalStorage.set('userCollect', allCollect.value);
           console.log(allDoc.value);
           console.log(allCollect.value);
         })
@@ -446,13 +444,6 @@ export default {
       //     console.error(error);
       //   });
     };
-    function getDocID (colitem) {
-      // allDoc.value.forEach((elem) => {
-      //   if (colitem.AuthorId === ) {
-
-      //   }
-      // });
-    }
 
     getAllUserInfo();
     console.log(value);
@@ -460,8 +451,6 @@ export default {
       currentDoc,
       currentCollect,
       expanded,
-      slide,
-      autoplay,
       dialog,
 
       userName,
@@ -490,8 +479,7 @@ export default {
       paginatedDoc,
       paginatedCol,
       deleteDoc,
-      updateDoc,
-      getDocID
+      updateDoc
     }
   }
 }

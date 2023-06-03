@@ -2,9 +2,9 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
     <q-toolbar class="bg-dark glossy text-white">
-    <q-btn round>
+    <q-btn round router-link to="/index">
       <q-avatar rounded >
-       <img src="~assets/tsmc.png">
+       <img src="~assets/tsmc.png" >
       </q-avatar>
       </q-btn>
 
