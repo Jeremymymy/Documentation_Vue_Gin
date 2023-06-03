@@ -2,9 +2,9 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
     <q-toolbar class="bg-dark glossy text-white">
-    <q-btn round>
+    <q-btn round router-link to="/index">
       <q-avatar rounded >
-       <img src="~assets/tsmc.png">
+       <img src="~assets/tsmc.png" >
       </q-avatar>
       </q-btn>
 
@@ -72,6 +72,7 @@
 
 <script>
 // import { useUserStore } from 'src/stores/user';
+// import { LocalStorage, SessionStorage } from 'quasar';
 import { LocalStorage } from 'quasar';
 export default {
   setup () {
@@ -82,7 +83,8 @@ export default {
       name: value.Name,
 
       logout () {
-        sessionStorage.clear()
+        LocalStorage.clear()
+        // SessionStorage.clear()
       }
     };
   }

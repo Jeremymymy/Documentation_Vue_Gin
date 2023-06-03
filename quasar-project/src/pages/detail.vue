@@ -3,7 +3,7 @@
 
     <q-card dark bordered class="bg-grey-9 my-card">
       <q-card-section>
-        <div class="text-h4">Title<q-btn
+        <div class="text-h4">{{ title }}<q-btn
         size = 'lg'
         round
         flat
@@ -13,9 +13,9 @@
         />
         </div>
         <div>
-        <q-chip icon="today">Data:</q-chip>
-        <q-chip icon="person">Author:</q-chip>
-        <q-chip icon="update">Version:</q-chip>
+        <q-chip icon="today">Data: {{ date }}</q-chip>
+        <q-chip icon="person">Author: {{ author }}</q-chip>
+        <q-chip icon="update">Version: {{ version }}</q-chip>
         </div><br />
         <q-btn
         unelevated rounded
@@ -28,8 +28,22 @@
         />
       </q-card-section>
       <q-separator dark inset />
-      <q-card-section>
-        {{ lorem }}
+      <q-card-section class="my-doc-content">
+        <div class="col-5 ">
+          <div class="row">
+            <!-- <q-editor id = 'editor' v-model="dContent" class="section-card "
+                :toolbar="[
+                  ['bold', 'italic', 'strike', 'underline'],
+                  ['hr', 'link'],
+                  ['fullscreen']
+                ]"
+            /> -->
+            {{ content }}
+          </div>
+          <div class="row justify-center">
+            <q-btn id = 'editBtn' label="編輯" color="black" type="submit" />
+          </div>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -38,12 +52,66 @@
 
 <script>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router';
+import axios from 'axios';
 export default {
   setup () {
+    const route = useRoute()
+    console.log(route.query.docID);
+
+    const title = ref('');
+    const content = ref('');
+    const author = ref('');
+    const date = ref('');
+    const version = ref('First');
+    const editflag = ref(false);
+
+    function getDoc (id) {
+      axios
+        .get(`http://localhost:8000/TSMC/docs/getDoc/${id}`)
+        .then(response => {
+          console.log(response);
+          console.log(response.data);
+          title.value = response.data.Title
+          content.value = response.data.Content
+          author.value = response.data.AuthorName
+          date.value = response.data.UpdatedAt
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    function edit () {
+      editflag.value = !editflag.value;
+    };
+    // function my (id) {
+    //   return document.getElementById(id);
+    // };
+    // my('editBtn').onclick = function () {
+    //   my('editor').style.display = 'none';
+    // };
+    getDoc(route.query.docID);
+
     return {
       expanded: ref(false),
-      lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+      title,
+      content,
+      author,
+      date,
+      version,
+      editflag,
+      edit
     }
   }
 }
 </script>
+<style lang="sass" scoped>
+.my-card
+  width: 100%
+  height: 100%
+  max-width: 100%
+.my-doc-content
+  width: 100%
+  height: 100%
+  full-height: 100%
+</style>

@@ -1,12 +1,11 @@
 <template>
-
     <div  class="text-h6 q-pa-sm " align="center"><b class="title"><br/>個人資料</b></div>
 
     <div class="q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
     <q-card class="my-card-info "  >
       <q-card-section horizontal>
         <q-img class="col-5" src="https://cdn.quasar.dev/img/boy-avatar.png"/>
-
+        <!-- https://cdn.quasar.dev/img/avatar.png -->
         <q-card-section>
           <div class="col-5 ">
             <div class="row">
@@ -93,8 +92,8 @@
     </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
+      <div class=" q-pa-md row section-card items-start q-gutter-md justify-center"  align="center">
+      <q-card class="my-card col" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
         <!-- <q-img
           src="https://cdn.quasar.dev/img/parallax2.jpg"
         /> -->
@@ -103,20 +102,45 @@
         </q-card-actions>
 
         <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+
+          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title }}</div>
+          <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
           <div class="text-caption text-grey">
             {{ item.Content }}
           </div>
         </q-card-section>
         <q-card-actions align="right">
            <!-- <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/> -->
-          <q-btn flat round color="primary" icon="edit" />
-          <q-btn flat round color="teal" icon="delete" />
+            <router-link :to="{path: '/detail', query: {docID: item.ID }}">
+              <q-btn flat round color="primary" icon="edit" />
+            </router-link>
+
+            <q-btn flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
+              <q-dialog v-model="item.deleteDialog">
+                <q-card class="my-card-info-fix q-pa-md" align="center">
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
+
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                </q-card>
+              </q-dialog>
+            </q-btn>
         </q-card-actions>
       </q-card>
+      <q-dialog v-model="dialogDelete">
+                <!-- <q-card class="my-card-info-fix q-pa-md" align="center"> -->
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
 
-      <div class="q-pa-lg flex flex-center">
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                <!-- </q-card> -->
+      </q-dialog>
+      </div>
+      <div class="q-pa-lg flex flex-center justify-center">
         <q-pagination
           v-model="currentDoc"
           :min="1"
@@ -125,32 +149,37 @@
           input-class="text-orange-10"
         />
       </div>
-      </div>
 
       <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
-      <div class=" q-pa-md row section-card items-start q-gutter-md row justify-center"  align="center">
-      <q-card class="my-card" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
-        <!-- <q-img
-          src="https://cdn.quasar.dev/img/parallax2.jpg"
-        /> -->
-        <q-card-actions align="left">
-          <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
-        </q-card-actions>
+      <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
+      <!-- <div class="q-pa-lg center row"> -->
+        <q-card class="my-card col" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
+          <!-- <q-img
+            src="https://cdn.quasar.dev/img/parallax2.jpg"
+          /> -->
+          <q-card-actions align="left">
+            <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
+          </q-card-actions>
 
-        <q-card-section>
-          <div class="text-overline text-orange-9">Overline</div>
-          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
-          <div class="text-caption text-grey">
-            {{ item.Content }}
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat round color="primary" icon="edit" />
-          <q-btn flat round color="teal" icon="delete" />
-        </q-card-actions>
-      </q-card>
-
-      <div class="q-pa-lg flex flex-center">
+          <q-card-section>
+            <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
+            <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
+            <div class="text-caption text-grey">
+              {{ item.Content }}
+            </div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <!-- <q-btn flat round color="primary" icon="edit" /> -->
+            <!-- <q-btn flat round color="teal" icon="delete" /> -->
+            <router-link :to="{path: '/detail', query: {docID: item.DocId }}">
+              <q-btn flat round color="primary" icon="edit" />
+            </router-link>
+          </q-card-actions>
+        </q-card>
+      </div>
+      <!-- </div> -->
+      <!-- <q-card-section> -->
+      <div class="q-pa-lg center row justify-center">
         <q-pagination
           v-model="currentCollect"
           :min="1"
@@ -159,7 +188,8 @@
           input-class="text-orange-10"
         />
       </div>
-      </div>
+      <!-- </q-card-section> -->
+      <!-- </div> -->
 
 </template>
 
@@ -170,15 +200,13 @@ import axios from 'axios';
 // import { useQuasar } from 'quasar'
 import { LocalStorage, SessionStorage } from 'quasar';
 // import { useQuasar } from 'quasar';
-const userInfo = useUserStore();
+// const userInfo = useUserStore();
 export default {
   name: 'personal',
   setup () {
     const value = SessionStorage.getItem('userSession');
     const value2 = LocalStorage.getItem('userInfo');
     const expanded = ref(false);
-    const slide = ref('style');
-    const autoplay = ref(true);
     const dialog = ref(false);
 
     const userName = ref(value2.Name);
@@ -232,7 +260,7 @@ export default {
         console.log('Delete');
         let colID = null;
         allCollect.value.forEach((elem) => {
-          if (ff.Title === elem.Title) {
+          if (ff.ID === elem.DocId) {
             colID = elem.ID
           }
         });
@@ -263,16 +291,17 @@ export default {
             allCollect.value.forEach((elemC) => {
               // console.log(elem);
               // console.log(elemC.Title);
-              if (elemC.Title !== elem.Title && elem.favorite !== true) {
+              if (elemC.DocId !== elem.ID && elem.favorite !== true) { /* && elemC.Title === elem.Title */
                 elem.favorite = false;
                 // console.log('yes');
               } else {
                 elem.favorite = true;
                 // console.log('no');
               }
+              elem.deleteDialog = false;
             });
           });
-
+          LocalStorage.set('userCollect', allCollect.value);
           console.log(allDoc.value);
           console.log(allCollect.value);
         })
@@ -300,6 +329,7 @@ export default {
     function modify () {
       const userStore = useUserStore();
       const value = SessionStorage.getItem('userSession');
+      const value2 = LocalStorage.getItem('userInfo');
 
       console.log(value);
       // config.headers.Authorization = value;
@@ -310,13 +340,22 @@ export default {
         Password: passwordM.value
       };
       console.log(userM)
+
+      if (userM.Name === null) {
+        userM.Name = value2.Name
+      } else if (userM.Email === null) {
+        userM.Email = value2.Email
+      } else if (userM.Password === null) {
+        userM.Password = value2.Password
+      }
+
       axios
-        .put(`http://localhost:8000/TSMC/users/${userInfo.getUserid}`, userM)
+        .put(`http://localhost:8000/TSMC/users/${value2.EmployeeId}`, userM)
         .then(response => {
           console.log(response);
           console.log(value);
           userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
-
+          response.data.Password = passwordM.value;
           LocalStorage.set('userInfo', response.data)
           showSuccessMessage = true;
           window.location.reload();
@@ -337,25 +376,18 @@ export default {
       allDoc.value.forEach((elem) => {
         if (elem.Title === doc.Title || elem.Title.includes(doc.Title + ' (')) {
           if (elem.Title.includes(' (') && elem.Title.includes(')')) {
-            console.log('abc')
-            let i = 0;
-            let substr = `(${i})`;
-            do {
-              i++;
-              substr = `(${i})`;
-            }
-            while (!elem.Title.includes(substr) && !elem.Title.includes(`(${++i})`));
-            // if (doc.Titlestr.includes(substr))
-            i++;
-            // console.log('ss' + substr)
-            tmpTitle = elem.Title;
-            // console.log('qq ' + tmpTitle)
-            const substrNew = `(${i})`;
-            // console.log('pp' + substrNew);
-            tmpTitle = tmpTitle.replace(substr, substrNew)
-            // console.log(tmpTitle)
+            // console.log('abc ' + elem)
+            const split = elem.Title.split('(')
+            // console.log('length ' + split.length)
+            // console.log('length ' + split[split.length - 1])
+            let index = parseInt(split[split.length - 1], 10);
+            const substr = `(${index})`;
+            const substrNew = `(${++index})`;
+            // console.log('substr ' + substr)
+            // console.log('substrM ' + substrNew)
+            tmpTitle = elem.Title.replace(substr, substrNew)
           } else {
-            // console.log('def')
+            console.log('def')
             tmpTitle = doc.Title + ' (1)';
           }
         }
@@ -377,14 +409,48 @@ export default {
           // You can display an error message or perform other actions
         });
     };
+    function deleteDoc (ff) {
+      axios
+        .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
+        .then(response => {
+          console.log(response);
+          console.log(response.data);
+          allCollect.value.forEach((elemC) => {
+            if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
+              deleteCollect(elemC);
+            }
+          });
+          getAllUserInfo();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
+    function updateDoc (ff) {
+      // router.push('/detail');
+      // axios
+      //   .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
+      //   .then(response => {
+      //     console.log(response);
+      //     console.log(response.data);
+      //     allCollect.value.forEach((elemC) => {
+      //       if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
+      //         deleteCollect(elemC);
+      //       }
+      //     });
+      //     getAllUserInfo();
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
+    };
+
     getAllUserInfo();
     console.log(value);
     return {
       currentDoc,
       currentCollect,
       expanded,
-      slide,
-      autoplay,
       dialog,
 
       userName,
@@ -411,7 +477,9 @@ export default {
       modify,
       totalPages,
       paginatedDoc,
-      paginatedCol
+      paginatedCol,
+      deleteDoc,
+      updateDoc
     }
   }
 }
