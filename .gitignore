@@ -1,3 +1,4 @@
 # DBConnect
 .DBconnect
 DBconnect.go
+mysql_data/*
