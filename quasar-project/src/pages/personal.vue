@@ -115,8 +115,8 @@
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
 
-            <q-btn flat round color="teal" icon="delete" @click="dialogDelete = !dialogDelete" >
-              <q-dialog v-model="dialogDelete">
+            <q-btn flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
+              <q-dialog v-model="item.deleteDialog">
                 <q-card class="my-card-info-fix q-pa-md" align="center">
                   <q-card-section>
                     <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
@@ -129,6 +129,16 @@
             </q-btn>
         </q-card-actions>
       </q-card>
+      <q-dialog v-model="dialogDelete">
+                <!-- <q-card class="my-card-info-fix q-pa-md" align="center"> -->
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
+
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                <!-- </q-card> -->
+      </q-dialog>
       </div>
       <div class="q-pa-lg flex flex-center justify-center">
         <q-pagination
@@ -222,8 +232,6 @@ export default {
     const currentDoc = ref(1);
     const pageSize = 4;
 
-    const dialogDelete = ref(false);
-
     function totalPages (item) {
       return Math.ceil(item.length / pageSize);
     };
@@ -292,6 +300,7 @@ export default {
                 elem.favorite = true;
                 // console.log('no');
               }
+              elem.deleteDialog = false;
             });
           });
 
@@ -454,7 +463,6 @@ export default {
       slide,
       autoplay,
       dialog,
-      dialogDelete,
 
       userName,
       userDep,
