@@ -144,7 +144,7 @@ export default {
   props: ['data'],
   setup () {
     const userInfo = LocalStorage.getItem('userInfo');
-    const allMyCollect = ref(LocalStorage.getItem('userCollect'));
+    const allMyCollect = ref(''); // LocalStorage.getItem('userCollect')
     const allDepDoc = ref('');
     const pageSize = 4;
     const currentDoc = ref(1);
@@ -187,7 +187,7 @@ export default {
 
           allMyCollect.value = response.data.CollectDocs;
           console.log(allMyCollect.value.length);
-          LocalStorage.set('userCollect', allMyCollect.value);
+          // LocalStorage.set('userCollect', allMyCollect.value);
 
           console.log(allMyCollect.value);
         })
@@ -232,6 +232,7 @@ export default {
       }
     };
 
+    getAllUserInfo();
     getAllDepDoc();
 
     return {
