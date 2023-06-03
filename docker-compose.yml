@@ -16,6 +16,7 @@ services:
       - "3306"
     ports:
       - "3305:3306"
+  
   backend:
     depends_on:
       - db
@@ -32,3 +33,12 @@ services:
     ports:
       - "8000:8000"
 
+  web:
+    depends_on:
+      - backend
+    build:
+      context: quasar-project/.
+      target: "production-stage"
+    image: quasar-documentation-frontend
+    ports:
+    - "8080:80"
