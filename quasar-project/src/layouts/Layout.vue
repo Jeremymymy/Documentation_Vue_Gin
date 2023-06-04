@@ -10,9 +10,9 @@
 
       <q-toolbar-title>TSMC
       </q-toolbar-title>
-      <q-btn flat class="q-mr-md" label ="發表文件"  router-link to="/personal"></q-btn>
-      <q-btn flat class="q-mr-md" label ="管理文件" ></q-btn>
-      <q-btn flat class="q-mr-md" label ="收藏文件" ></q-btn>
+      <q-btn flat class="q-mr-md" label ="發表文件" router-link to="/personal/target1"></q-btn>
+      <q-btn flat class="q-mr-md" label ="管理文件" router-link to="/personal/target2"></q-btn>
+      <q-btn flat class="q-mr-md" label ="收藏文件" router-link to="/personal/target3"></q-btn>
       <q-btn flat round dense icon="search" />
       <div class="q-pa-md">
     <q-btn-dropdown

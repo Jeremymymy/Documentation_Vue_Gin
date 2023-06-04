@@ -61,7 +61,7 @@
     </q-card>
     </div>
 
-    <div  class="text-h6 q-pa-sm " align="center"><b class="title"><br/>發布文章</b></div>
+    <div id="target1" class="text-h6 q-pa-sm " align="center"><b class="title"><br/>發布文章</b></div>
     <!-- <q-page-sticky position="top-right" :offset="[18, 18]"> -->
     <div class="column justify-evenly">
     <q-form
@@ -100,7 +100,7 @@
     </q-form>
     </div>
 
-      <div  class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
+      <div id="target2" class="text-h6 q-pa-sm " align="center"><b class="title">發文紀錄</b></div>
       <div class=" q-pa-md row section-card items-start q-gutter-md justify-center"  align="center">
       <q-card class="my-card col" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
         <!-- <q-img
@@ -151,7 +151,7 @@
         />
       </div>
 
-      <div  class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
+      <div id="target3" class="text-h6 q-pa-sm " align="center"><b class="title">收藏文件</b></div>
       <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
       <!-- <div class="q-pa-lg center row"> -->
         <q-card class="my-card col" flat bordered  v-for="item in paginatedCol()" :key="item.ID">
@@ -203,7 +203,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onBeforeUpdate } from 'vue'
+import { useRoute } from 'vue-router';
 // import { useUserStore } from 'src/stores/user';
 import axios from 'axios';
 import { LocalStorage, SessionStorage } from 'quasar';
@@ -461,7 +462,15 @@ export default {
       //     console.error(error);
       //   });
     };
-
+    const $route = useRoute();
+    if ($route.params.section != null) {
+      onBeforeUpdate(() => {
+        const sectionId = $route.params.section;
+        console.log($route.params.section);
+        const element = document.getElementById(sectionId);
+        element.scrollIntoView();
+      });
+    }
     getAllUserInfo();
     console.log(value);
     return {
