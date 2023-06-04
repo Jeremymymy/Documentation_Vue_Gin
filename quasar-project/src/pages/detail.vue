@@ -62,8 +62,8 @@
           </div>
           </div>
           <div v-show="watchflag" class="row justify-center">
-            <q-btn v-show="!editflag" label="編輯" color="black" type="submit" @click="edit" />
-            <q-btn v-show="editflag" label="取消編輯" color="black" type="submit" @click="edit" />
+            <q-btn v-show="!editflag" unelevated rounded glossy  icon="edit" label="編輯" color="black" type="submit" @click="edit" />
+            <q-btn v-show="editflag" unelevated rounded glossy label="取消編輯" color="black" type="submit" @click="edit" />
           </div>
         </div>
       </q-card-section>
