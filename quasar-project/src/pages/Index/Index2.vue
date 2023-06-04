@@ -87,6 +87,55 @@
       </q-carousel-slide>
     </q-carousel>
   </div>
+
+  <div  class="text-h3 q-pa-sm " align="center"><b class="title">公開文件</b></div>
+      <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
+      <q-card class="my-card col" flat bordered  v-for="item in paginatedPublicDoc()" :key="item.ID">
+
+        <q-card-actions align="left">
+           <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/>
+        </q-card-actions>
+
+        <q-card-section>
+
+          <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title }}</div>
+          <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
+          <div class="text-overline text-orange-10">Department: {{ item.Belong }}</div>
+          <div class="text-caption text-grey">
+            {{ item.Content }}
+          </div>
+        </q-card-section>
+        <q-card-actions align="right">
+
+            <router-link :to="{path: '/detail', query: {docID: item.ID }}">
+              <q-btn flat round color="primary" icon="edit" />
+            </router-link>
+
+            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
+              <q-dialog v-model="item.deleteDialog">
+                <q-card class="my-card-info-fix q-pa-md" align="center">
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
+
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                </q-card>
+              </q-dialog>
+            </q-btn>
+        </q-card-actions>
+      </q-card>
+      </div>
+      <div class="q-pa-lg flex flex-center justify-center">
+        <q-pagination
+          v-model="currentDoc"
+          :min="1"
+          :max="Math.ceil(allDepDoc.length/4)"
+          :input="true"
+          input-class="text-orange-10"
+        />
+      </div>
+
   <div  class="text-h3 q-pa-sm " align="center"><b class="title">部門文件</b></div>
       <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
       <q-card class="my-card col" flat bordered  v-for="item in paginatedDoc()" :key="item.ID">
@@ -99,6 +148,7 @@
 
           <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title }}</div>
           <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
+          <div class="text-overline text-orange-10">Department: {{ item.Belong }}</div>
           <div class="text-caption text-grey">
             {{ item.Content }}
           </div>
@@ -109,7 +159,7 @@
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
 
-            <!-- <q-btn flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
+            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
               <q-dialog v-model="item.deleteDialog">
                 <q-card class="my-card-info-fix q-pa-md" align="center">
                   <q-card-section>
@@ -120,7 +170,7 @@
                 <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
                 </q-card>
               </q-dialog>
-            </q-btn> -->
+            </q-btn>
         </q-card-actions>
       </q-card>
       </div>
@@ -146,14 +196,50 @@ export default {
     const userInfo = LocalStorage.getItem('userInfo');
     const allMyCollect = ref(''); // LocalStorage.getItem('userCollect')
     const allDepDoc = ref('');
+    const allPublicDoc = ref('');
     const pageSize = 4;
     const currentDoc = ref(1);
+    const currentPublicDoc = ref(1);
 
     function paginatedDoc () {
       const startIndex = (currentDoc.value - 1) * pageSize;
       return allDepDoc.value.slice(startIndex, startIndex + pageSize);
     };
+    function paginatedPublicDoc () {
+      const startIndex = (currentPublicDoc.value - 1) * pageSize;
+      return allPublicDoc.value.slice(startIndex, startIndex + pageSize);
+    };
     console.log(allMyCollect.value);
+    function getAllPublicDoc () {
+      axios
+        .get('http://localhost:8000/TSMC/docs/getDepartmentDocs/Public')
+        .then(response => {
+          console.log(response);
+          console.log(response.data);
+
+          allPublicDoc.value = response.data;
+          console.log(allMyCollect.value.length);
+          allPublicDoc.value.forEach((elem) => {
+            allMyCollect.value.forEach((elemC) => {
+              if (elemC.DocId !== elem.ID && elem.favorite !== true) {
+                elem.favorite = false;
+              } else {
+                elem.favorite = true;
+              }
+              elem.deleteDialog = false;
+            });
+            if (elem.AuthorId === userInfo.EmployeeId) {
+              elem.mine = true;
+            } else {
+              elem.mine = false;
+            }
+          });
+          console.log(allDepDoc.value);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
     function getAllDepDoc () {
       axios
         .get(`http://localhost:8000/TSMC/docs/getDepartmentDocs/${userInfo.Department}`)
@@ -172,6 +258,11 @@ export default {
               }
               elem.deleteDialog = false;
             });
+            if (elem.AuthorId === userInfo.EmployeeId) {
+              elem.mine = true;
+            } else {
+              elem.mine = false;
+            }
           });
           console.log(allDepDoc.value);
         })
@@ -231,9 +322,44 @@ export default {
         }
       }
     };
+    function deleteCollect (ff) {
+      // ff.favorite = !ff.favorite;
+      console.log('Delete');
+      axios
+        .delete(`http://localhost:8000/TSMC/docs/deleteCollect/${ff.ID}`)
+        .then(response => {
+          console.log(response);
+          getAllUserInfo();
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle registration error
+          // You can display an error message or perform other actions
+        });
+    };
+    function deleteDoc (ff) {
+      axios
+        .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
+        .then(response => {
+          console.log(response);
+          console.log(response.data);
+          allMyCollect.value.forEach((elemC) => {
+            if (ff.AuthorId === elemC.AuthorId && ff.ID === elemC.DocId) {
+              deleteCollect(elemC);
+            }
+          });
+          getAllUserInfo();
+          getAllDepDoc();
+          getAllPublicDoc();
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    };
 
     getAllUserInfo();
     getAllDepDoc();
+    getAllPublicDoc();
 
     return {
       expanded: ref(false),
@@ -241,13 +367,18 @@ export default {
       autoplay: ref(true),
       lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       paginatedDoc,
+      paginatedPublicDoc,
+      getAllPublicDoc,
       getAllDepDoc,
       allDepDoc,
       pageSize,
       currentDoc,
+      currentPublicDoc,
       allMyCollect,
       createCollect,
-      getAllUserInfo
+      getAllUserInfo,
+      deleteDoc,
+      deleteCollect
     }
   }
 }
