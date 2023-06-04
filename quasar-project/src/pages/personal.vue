@@ -71,6 +71,13 @@
     <div class="col ">
     <q-input v-model="dName" label="文章標題" class="section-card" />
     </div>
+    <div class="col">
+      <q-select v-model="section" :options="options" label="Department" class="section-card">
+        <template v-slot:prepend>
+          <q-icon name="work" />
+        </template>
+      </q-select>
+    </div>
     <br>
     <div class="col ">
     <q-editor v-model="dContent" class="section-card"
@@ -107,6 +114,7 @@
 
           <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title }}</div>
           <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
+          <div class="text-overline text-orange-10">Department: {{ item.Belong }}</div>
           <div class="text-caption text-grey">
             {{ item.Content }}
           </div>
@@ -157,16 +165,28 @@
           <q-card-section>
             <div class="text-h5 q-mt-sm q-mb-xs">{{ item.Title}}</div>
             <div class="text-overline text-orange-10">Author: {{ item.AuthorName }}</div>
+            <div class="text-overline text-orange-10">Department: {{ item.Belong }}</div>
             <div class="text-caption text-grey">
               {{ item.Content }}
             </div>
           </q-card-section>
           <q-card-actions align="right">
-            <!-- <q-btn flat round color="primary" icon="edit" /> -->
-            <!-- <q-btn flat round color="teal" icon="delete" /> -->
             <router-link :to="{path: '/detail', query: {docID: item.DocId }}">
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
+
+            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
+              <q-dialog v-model="item.deleteDialog">
+                <q-card class="my-card-info-fix q-pa-md" align="center">
+                  <q-card-section>
+                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
+                  </q-card-section>
+
+                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
+                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
+                </q-card>
+              </q-dialog>
+            </q-btn>
           </q-card-actions>
         </q-card>
       </div>
@@ -184,29 +204,27 @@
 
 <script>
 import { ref } from 'vue'
-import { useUserStore } from 'src/stores/user';
+// import { useUserStore } from 'src/stores/user';
 import axios from 'axios';
-// import { useQuasar } from 'quasar'
 import { LocalStorage, SessionStorage } from 'quasar';
-// import { useQuasar } from 'quasar';
-// const userInfo = useUserStore();
+
 export default {
   name: 'personal',
   setup () {
     const value = SessionStorage.getItem('userSession');
-    const value2 = LocalStorage.getItem('userInfo');
+    const userInfo = LocalStorage.getItem('userInfo');
     const expanded = ref(false);
     const dialog = ref(false);
 
-    const userName = ref(value2.Name);
-    const userDep = ref(value2.Department);
-    const userEmail = ref(value2.Email);
-    const userPassword = ref(value2.Password);
-    const userID = ref(value2.EmployeeId);
+    const userName = ref(userInfo.Name);
+    const userDep = ref(userInfo.Department);
+    const userEmail = ref(userInfo.Email);
+    const userPassword = ref(userInfo.Password);
+    const userID = ref(userInfo.EmployeeId);
 
-    const nameM = ref(value2.Name);
-    const emailM = ref(value2.Email);
-    const passwordM = ref(value2.Password);
+    const nameM = ref(userInfo.Name);
+    const emailM = ref(userInfo.Email);
+    const passwordM = ref(userInfo.Password);
 
     const dName = ref('title');
     const dContent = ref('content');
@@ -218,6 +236,9 @@ export default {
     const currentCollect = ref(1);
     const currentDoc = ref(1);
     const pageSize = 4;
+
+    const section = ref(userInfo.Department);
+    const options = [userInfo.Department, 'Public'];
 
     function totalPages (item) {
       return Math.ceil(item.length / pageSize);
@@ -288,6 +309,12 @@ export default {
                 // console.log('no');
               }
               elem.deleteDialog = false;
+
+              if (elemC.AuthorId === userInfo.EmployeeId) {
+                elemC.mine = true;
+              } else {
+                elemC.mine = false;
+              }
             });
           });
           LocalStorage.set('userCollect', allCollect.value);
@@ -311,17 +338,14 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          // Handle registration error
-          // You can display an error message or perform other actions
         });
     };
     function modify () {
-      const userStore = useUserStore();
-      const value = SessionStorage.getItem('userSession');
-      const value2 = LocalStorage.getItem('userInfo');
-
+      // const userStore = useUserStore();
+      // const value = SessionStorage.getItem('userSession');
+      // const userInfo = LocalStorage.getItem('userInfo');
       console.log(value);
-      // config.headers.Authorization = value;
+
       const userM = {
         id: userID.value,
         Name: nameM.value,
@@ -331,19 +355,21 @@ export default {
       console.log(userM)
 
       if (userM.Name === null) {
-        userM.Name = value2.Name
-      } else if (userM.Email === null) {
-        userM.Email = value2.Email
-      } else if (userM.Password === null) {
-        userM.Password = value2.Password
+        userM.Name = userInfo.Name
+      }
+      if (userM.Email === null) {
+        userM.Email = userInfo.Email
+      }
+      if (userM.Password === null) {
+        userM.Password = userInfo.Password
       }
 
       axios
-        .put(`http://localhost:8000/TSMC/users/${value2.EmployeeId}`, userM)
+        .put(`http://localhost:8000/TSMC/users/${userInfo.EmployeeId}`, userM)
         .then(response => {
           console.log(response);
           console.log(value);
-          userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
+          // userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
           response.data.Password = passwordM.value;
           LocalStorage.set('userInfo', response.data)
           // showSuccessMessage.value = true;
@@ -354,18 +380,15 @@ export default {
         });
     };
     function createDoc () {
-      const value = SessionStorage.getItem('userSession')
-      console.log(value);
-      // config.headers.Authorization = value;
       const doc = {
         Title: dName.value,
-        Content: dContent.value
+        Content: dContent.value,
+        Belong: section.value
       };
       let tmpTitle = doc.Title;
       allDoc.value.forEach((elem) => {
         if (elem.Title === doc.Title || elem.Title.includes(doc.Title + ' (')) {
           if (elem.Title.includes(' (') && elem.Title.includes(')')) {
-            // console.log('abc ' + elem)
             const split = elem.Title.split('(')
             // console.log('length ' + split.length)
             // console.log('length ' + split[split.length - 1])
@@ -396,8 +419,6 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          // Handle registration error
-          // You can display an error message or perform other actions
         });
     };
     function deleteDoc (ff) {
@@ -470,7 +491,9 @@ export default {
       paginatedDoc,
       paginatedCol,
       deleteDoc,
-      updateDoc
+      updateDoc,
+      section,
+      options
     }
   }
 }
