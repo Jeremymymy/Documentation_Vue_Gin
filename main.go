@@ -11,6 +11,11 @@ import (
 )
 
 func main() {
+	router := setupRouter()
+	router.Run(":8000")
+}
+
+func setupRouter() *gin.Engine {
 	router := gin.Default()
 
 	config := cors.DefaultConfig()
@@ -29,5 +34,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	router.Run(":8000")
+	return router
 }
