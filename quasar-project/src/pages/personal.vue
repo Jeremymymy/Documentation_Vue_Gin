@@ -83,7 +83,6 @@
     <q-editor v-model="dContent" class="section-card"
         :toolbar="[
           ['bold', 'italic', 'strike', 'underline'],
-          ['hr', 'link'],
           ['fullscreen'],
         ]"
     />
@@ -120,7 +119,6 @@
           </div>
         </q-card-section>
         <q-card-actions align="right">
-           <!-- <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/> -->
             <router-link :to="{path: '/detail', query: {docID: item.ID }}">
               <q-btn flat round color="primary" icon="edit" />
             </router-link>
@@ -232,8 +230,8 @@ export default {
 
     const showSuccessMessage = ref(false);
 
-    const allDoc = ref('');
-    const allCollect = ref('');
+    const allDoc = ref(Object([{}]));
+    const allCollect = ref(Object([{}]));
     const currentCollect = ref(1);
     const currentDoc = ref(1);
     const pageSize = 4;
@@ -444,24 +442,11 @@ export default {
           console.error(error);
         });
     };
-    function updateDoc (ff) {
-      // router.push('/detail');
-      // axios
-      //   .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
-      //   .then(response => {
-      //     console.log(response);
-      //     console.log(response.data);
-      //     allCollect.value.forEach((elemC) => {
-      //       if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
-      //         deleteCollect(elemC);
-      //       }
-      //     });
-      //     getAllUserInfo();
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
-    };
+    // function redirectToIndex () {
+    //   // 登录成功，进行页面跳转
+    //   this.$router.push('/detail');
+    // }
+
     const $route = useRoute();
     if ($route.params.section != null) {
       onBeforeUpdate(() => {
@@ -505,7 +490,7 @@ export default {
       paginatedDoc,
       paginatedCol,
       deleteDoc,
-      updateDoc,
+
       section,
       options
     }

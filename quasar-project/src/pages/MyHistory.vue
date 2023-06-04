@@ -5,17 +5,19 @@
     </div>
     <q-card dark bordered class="bg-grey-9 my-card">
       <q-card-section>
-        <div class="text-h4 q-mb-sm text-center">{{ documentTitle }}</div>
+        <div class="text-h4 q-mb-sm text-center">{{ title }}</div>
         <hr class="h1" />
-        <div v-for="(item, index) in historyInfo" :key="index">
+        <div v-for="item in version" :key="item.ID">
           <div class="q-ma-md show-row-equal-width">
-            <div class="row">
-              <div class="text-h5 col q-ma-md text-center">{{ item[0] }}</div>
-              <div class="text-h5 col q-ma-md text-center">{{ item[1] }}</div>
-              <div class="text-h5 col q-ma-md text-center">{{ item[2] }}</div>
-              <div class="text-h5 col q-ma-md text-center">{{ item[3] }}</div>
+            <div class="row" >
+              <div class="text-h6 col q-ma-md text-center">Version {{ item.Index }}</div>
+              <div class="text-h6 col q-ma-md text-center">Updater: {{ item.UpdaterName }}</div>
+              <div class="text-h6 col q-ma-md text-center">{{ item.UpdatedAt }}</div>
+              <!-- <div class="text-h5 col q-ma-md text-center">{{ item[3] }}</div> -->
               <div class="col q-ma-md text-center">
-                <q-btn color="white" text-color="black" label="View" @click="fetchData" />
+                <router-link :to="{path: '/detail', query: {docID: item.DocId, ver: item.Index }}">
+                  <q-btn color="white" text-color="black" label="View" />
+                </router-link>
               </div>
             </div>
           </div>
@@ -29,16 +31,37 @@
 <script>
 import axios from 'axios';
 import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
+import { useRoute } from 'vue-router';
 export default defineComponent({
   setup () {
-    const router = useRouter();
+    const route = useRoute()
+    console.log(route.query.docID);
+    const thisDoc = ref(route.query.docID);
+    const title = ref('');
+    const version = ref(Object([{}]));
+
+    // const fetchData = async () => {
+    //   try {
+    //     const response = await axios.get('');
+    //     const data = response.data;
+    //     router.push({ name: '/detail', params: { data } });
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
     const fetchData = async () => {
       try {
-        const response = await axios.get('');
-        const data = response.data;
-        router.push({ name: '/detail', params: { data } });
+        const response = await axios.get(`http://localhost:8000/TSMC/docs/getDocAllVers/${thisDoc.value}`);
+        // const data = response.data;
+        version.value = response.data.Vers
+        let index = 0;
+        version.value.forEach((elem) => {
+          index++;
+          elem.Index = index;
+        });
+        console.log(version.value);
+        title.value = response.data.Title
+        // console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -50,11 +73,14 @@ export default defineComponent({
       ['Version3', 'Author3', 'Date3']
     ];
     const documentTitle = ref('Title');
-
+    fetchData();
     return {
       fetchData,
       historyInfo,
-      documentTitle
+      documentTitle,
+      title,
+      version,
+      thisDoc
     };
   }
 });
