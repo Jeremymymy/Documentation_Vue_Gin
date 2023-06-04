@@ -154,7 +154,7 @@ export default {
     function edit () {
       editflag.value = !editflag.value;
     };
-    function updateDoc () {
+    function updateDoc () { // 從版控頁來的不能編輯
       const doc = {
         Title: title.value,
         Content: dContent.value,
@@ -167,12 +167,12 @@ export default {
           console.log(response.data);
 
           getDoc(thisDoc.value);
-
-          if (route.query.ver === undefined) {
-            getDocVersion(thisDoc.value);
-          } else {
-            getDocWithVersion(thisDoc.value, version.value)
-          }
+          getDocVersion(thisDoc.value);
+          // if (route.query.ver === undefined) {
+          //   getDocVersion(thisDoc.value);
+          // } else {
+          //   getDocWithVersion(thisDoc.value, version.value)
+          // }
 
           edit();
           $q.notify({

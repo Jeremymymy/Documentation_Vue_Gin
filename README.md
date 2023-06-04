@@ -33,4 +33,5 @@
 至 dbconnect/DBconnect.go 更改dsn ，將原先連線至本機 MySQL 的 dsn 註解，把下方 dsn 取消註解<br>
     dsn := "root:root@tcp(db)/tsmcdocs?charset=utf8mb4&parseTime=True&loc=Local" <br>
 ``` cd Documentation_Vue_Gin/ ``` <br>
+``` mkdir mysql_data ``` <br> 
 ``` docker-compose up ``` <br>
