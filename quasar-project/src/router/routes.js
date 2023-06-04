@@ -44,6 +44,13 @@ const routes = [
       { path: '', component: () => import('pages/personal.vue') }
     ]
   },
+  {
+    path: '/personal/:section',
+    component: () => import('layouts/Layout.vue'),
+    children: [
+      { path: '', component: () => import('pages/personal.vue') }
+    ]
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
