@@ -25,7 +25,6 @@ func CreateDoc(ctx *gin.Context) {
 	}
 	doc.AuthorId = sessionId
 	doc.AuthorName = user.Name
-	doc.Belong = user.Department
 	newDoc, _ := models.CreateDoc(doc)
 	if err := models.AddNewDoc(user, newDoc); err != nil {
 		ctx.JSON(http.StatusInternalServerError, "Error : "+err.Error())
@@ -91,7 +90,22 @@ func GetDepartmentDocs(ctx *gin.Context) {
 
 // Delete Document by DocId
 func DeleteDoc(ctx *gin.Context) {
+	sessionId := middlewares.GetSession(ctx)
+	if sessionId == "0" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
 	docId, _ := strconv.Atoi(ctx.Param("docId"))
+	doc, err := models.GetDocById(uint(docId))
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
+		return
+	} else if doc.AuthorId != sessionId {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User are not allow to delete this document"})
+		return
+	}
+
 	isDeleted := models.DeleteDoc(uint(docId))
 	if !isDeleted {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Fail to delete this doc"})
@@ -119,7 +133,11 @@ func UpdateDoc(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
 		return
+	} else if (doc.Belong == "Public") && (doc.AuthorId != sessionId) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User are not allow to update this document"})
+		return
 	}
+
 	if err := ctx.BindJSON(&doc); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid document data"})
 		return

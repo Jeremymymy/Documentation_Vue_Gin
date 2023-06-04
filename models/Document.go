@@ -10,7 +10,7 @@ type Document struct {
 	gorm.Model
 	AuthorId   string    `json:"AuthorId" gorm:"type:varchar(255);not null;index"`
 	AuthorName string    `json:"AuthorName" gorm:"not null"`
-	Belong     string    `json:"Belong"`
+	Belong     string    `json:"Belong" binding:"oneof=HR Sales Marketing IT Finance Public"`
 	Title      string    `json:"Title" binding:"required" gorm:"not null"`
 	Content    string    `json:"Content" binding:"required"`
 	Vers       []Version `json:"Vers" gorm:"foreignKey:DocId"`
