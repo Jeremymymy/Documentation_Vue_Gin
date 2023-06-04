@@ -447,24 +447,6 @@ export default {
     //   this.$router.push('/detail');
     // }
 
-    function updateDoc (ff) {
-      // router.push('/detail');
-      // axios
-      //   .delete(`http://localhost:8000/TSMC/docs/deleteDoc/${ff.ID}`)
-      //   .then(response => {
-      //     console.log(response);
-      //     console.log(response.data);
-      //     allCollect.value.forEach((elemC) => {
-      //       if (ff.AuthorId === elemC.AuthorId && ff.Title === elemC.Title) {
-      //         deleteCollect(elemC);
-      //       }
-      //     });
-      //     getAllUserInfo();
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
-    };
     const $route = useRoute();
     if ($route.params.section != null) {
       onBeforeUpdate(() => {
