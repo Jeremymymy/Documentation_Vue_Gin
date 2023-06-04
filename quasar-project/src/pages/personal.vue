@@ -69,7 +69,7 @@
       class="q-gutter-md"
     >
     <div class="col ">
-    <q-input v-model="dName" label="文章標題" :dense="dense" class="section-card" />
+    <q-input v-model="dName" label="文章標題" class="section-card" />
     </div>
     <br>
     <div class="col ">
@@ -82,9 +82,11 @@
     />
     </div>
     <!-- <div class="col "> -->
-    <div class="row justify-center ">
+    <div class="column  items-center">
+    <div class="col">
     <q-btn @click="model = true"  type="submit">送出</q-btn>
-    <div v-if="showSuccessMessage" class="success-message">
+    </div>
+    <div v-if="showSuccessMessage" class="success-message col">
       <p class="message-text">Create successfully !</p>
     </div>
     </div>
@@ -129,16 +131,7 @@
             </q-btn>
         </q-card-actions>
       </q-card>
-      <q-dialog v-model="dialogDelete">
-                <!-- <q-card class="my-card-info-fix q-pa-md" align="center"> -->
-                  <q-card-section>
-                    <div class="text-h6">確認要刪除 {{ item.Title }} ?</div>
-                  </q-card-section>
 
-                <q-btn flat round color="black" label="確認" type="submit" @click="deleteDoc(item)" ></q-btn>
-                <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
-                <!-- </q-card> -->
-      </q-dialog>
       </div>
       <div class="q-pa-lg flex flex-center justify-center">
         <q-pagination
@@ -177,8 +170,6 @@
           </q-card-actions>
         </q-card>
       </div>
-      <!-- </div> -->
-      <!-- <q-card-section> -->
       <div class="q-pa-lg center row justify-center">
         <q-pagination
           v-model="currentCollect"
@@ -188,8 +179,6 @@
           input-class="text-orange-10"
         />
       </div>
-      <!-- </q-card-section> -->
-      <!-- </div> -->
 
 </template>
 
@@ -222,7 +211,7 @@ export default {
     const dName = ref('title');
     const dContent = ref('content');
 
-    let showSuccessMessage = false;
+    const showSuccessMessage = ref(false);
 
     const allDoc = ref('');
     const allCollect = ref('');
@@ -357,7 +346,7 @@ export default {
           userStore.modify({ user: response.data, name: response.data.Name, email: response.data.Email, password: response.data.Password });
           response.data.Password = passwordM.value;
           LocalStorage.set('userInfo', response.data)
-          showSuccessMessage = true;
+          // showSuccessMessage.value = true;
           window.location.reload();
         })
         .catch(error => {
@@ -400,8 +389,10 @@ export default {
           console.log(response.data);
           console.log(value);
           // Handle successful registration
-          showSuccessMessage = true;
+
           getAllUserInfo();
+          showSuccessMessage.value = true;
+          setTimeout(function close () { showSuccessMessage.value = !showSuccessMessage.value }, 2000);
         })
         .catch(error => {
           console.error(error);
@@ -521,5 +512,6 @@ export default {
     color: white
     padding: 10px
     margin-top: 10px
+    max-width: 400px
 
 </style>
