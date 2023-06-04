@@ -145,7 +145,7 @@
         <q-pagination
           v-model="currentDoc"
           :min="1"
-          :max="Math.ceil(allDoc.length/4)"
+          :max="totalPages(allDoc)"
           :input="true"
           input-class="text-orange-10"
         />
@@ -194,7 +194,7 @@
         <q-pagination
           v-model="currentCollect"
           :min="1"
-          :max="Math.ceil(allCollect.length/4)"
+          :max="totalPages(allCollect)"
           :input="true"
           input-class="text-orange-10"
         />
@@ -241,7 +241,12 @@ export default {
     const options = [userInfo.Department, 'Public'];
 
     function totalPages (item) {
-      return Math.ceil(item.length / pageSize);
+      console.log(item)
+      if (item.length === 0) {
+        return 1;
+      } else {
+        return Math.ceil(item.length / pageSize);
+      }
     };
     function paginatedDoc () {
       const startIndex = (currentDoc.value - 1) * pageSize;

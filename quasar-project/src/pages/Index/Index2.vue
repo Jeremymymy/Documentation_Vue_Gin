@@ -1,6 +1,8 @@
 <template>
+<!-- <Suspense> -->
   <div  class="text-h3 q-pa-sm " align="center"><b class="title"><br />TSMC最新公告</b></div>
   <div class="q-pa-md">
+
     <q-carousel
       v-model="slide"
       :autoplay="autoplay"
@@ -14,6 +16,7 @@
       height="500px"
       class="bg-dark glossy text-white rounded-borders"
     >
+
       <q-carousel-slide name="style" class="text-center">
         <q-scroll-area class="fit">
           <q-icon name="style" size="56px" />
@@ -128,9 +131,9 @@
       </div>
       <div class="q-pa-lg flex flex-center justify-center">
         <q-pagination
-          v-model="currentDoc"
+          v-model="currentPublicDoc"
           :min="1"
-          :max="Math.ceil(allDepDoc.length/4)"
+          :max="totalPages(allPublicDoc)"
           :input="true"
           input-class="text-orange-10"
         />
@@ -178,11 +181,12 @@
         <q-pagination
           v-model="currentDoc"
           :min="1"
-          :max="Math.ceil(allDepDoc.length/4)"
+          :max="totalPages(allDepDoc)"
           :input="true"
           input-class="text-orange-10"
         />
       </div>
+    <!-- </Suspense> -->
 </template>
 
 <script>
@@ -194,13 +198,21 @@ export default {
   props: ['data'],
   setup () {
     const userInfo = LocalStorage.getItem('userInfo');
-    const allMyCollect = ref(''); // LocalStorage.getItem('userCollect')
-    const allDepDoc = ref('');
-    const allPublicDoc = ref('');
+    const allMyCollect = ref(Object([{}])); // LocalStorage.getItem('userCollect')
+    const allDepDoc = ref(Object([{}]));
+    const allPublicDoc = ref(Object([{}]));
     const pageSize = 4;
     const currentDoc = ref(1);
     const currentPublicDoc = ref(1);
 
+    function totalPages (item) {
+      console.log(item)
+      if (item.length === 0) {
+        return 1;
+      } else {
+        return Math.ceil(item.length / pageSize);
+      }
+    };
     function paginatedDoc () {
       const startIndex = (currentDoc.value - 1) * pageSize;
       return allDepDoc.value.slice(startIndex, startIndex + pageSize);
@@ -209,13 +221,14 @@ export default {
       const startIndex = (currentPublicDoc.value - 1) * pageSize;
       return allPublicDoc.value.slice(startIndex, startIndex + pageSize);
     };
-    console.log(allMyCollect.value);
+
     function getAllPublicDoc () {
       axios
         .get('http://localhost:8000/TSMC/docs/getDepartmentDocs/Public')
         .then(response => {
           console.log(response);
           console.log(response.data);
+          console.log('length ' + response.data.length);
 
           allPublicDoc.value = response.data;
           console.log(allMyCollect.value.length);
@@ -234,7 +247,7 @@ export default {
               elem.mine = false;
             }
           });
-          console.log(allDepDoc.value);
+          console.log(allPublicDoc.value);
         })
         .catch(error => {
           console.error(error);
@@ -333,8 +346,6 @@ export default {
         })
         .catch(error => {
           console.error(error);
-          // Handle registration error
-          // You can display an error message or perform other actions
         });
     };
     function deleteDoc (ff) {
@@ -349,8 +360,8 @@ export default {
             }
           });
           getAllUserInfo();
-          getAllDepDoc();
           getAllPublicDoc();
+          getAllDepDoc();
         })
         .catch(error => {
           console.error(error);
@@ -358,8 +369,8 @@ export default {
     };
 
     getAllUserInfo();
-    getAllDepDoc();
     getAllPublicDoc();
+    getAllDepDoc();
 
     return {
       expanded: ref(false),
@@ -368,7 +379,7 @@ export default {
       lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       paginatedDoc,
       paginatedPublicDoc,
-      getAllPublicDoc,
+      allPublicDoc,
       getAllDepDoc,
       allDepDoc,
       pageSize,
@@ -378,7 +389,8 @@ export default {
       createCollect,
       getAllUserInfo,
       deleteDoc,
-      deleteCollect
+      deleteCollect,
+      totalPages
     }
   }
 }
