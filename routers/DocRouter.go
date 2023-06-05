@@ -10,6 +10,8 @@ import (
 func AddDocRouter(rg *gin.RouterGroup) {
 	docsRoute := rg.Group("/docs", session.SetSession())
 
+	docsRoute.GET("/getPublicDocs/", services.GetPublicDocs)
+
 	docsRoute.Use(session.AuthSession())
 	{
 		docsRoute.POST("/createDoc", services.CreateDoc)

@@ -50,6 +50,16 @@ func CreateDoc(ctx *gin.Context) {
 	})
 }
 
+// Get All Public Docs
+func GetPublicDocs(ctx *gin.Context) {
+	docs, err := models.GetDepartmentDocs("Public")
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, docs)
+}
+
 // Get All stored Versions
 func GetAllVers(ctx *gin.Context) {
 	vers := models.GetAllVers()
