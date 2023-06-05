@@ -157,7 +157,7 @@
           /> -->
           <q-card-actions align="between">
             <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
-            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog"/>
+            <!--<q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog"/> -->
           </q-card-actions>
 
           <q-card-section>
@@ -255,11 +255,17 @@ export default {
     function createCollect (ff) {
       ff.favorite = !ff.favorite;
       if (ff.favorite === true) {
+        let collectedData;
         axios
           .get(`http://localhost:8000/TSMC/docs/collectDoc/${ff.ID}`)
           .then(response => {
-            console.log(response);
-            allCollect.value = response.data.Collect
+            console.log(response.data);
+            collectedData = response.data.Collect;
+            console.log(response.data.Collect);
+            console.log(collectedData);
+            collectedData.ID = response.data.Collect.DocId
+            console.log(collectedData.ID);
+            allCollect.value = collectedData
             console.log(allCollect.value);
             getAllUserInfo();
           })
@@ -293,9 +299,14 @@ export default {
         .get('http://localhost:8000/TSMC/users/getMyDetail')
         .then(response => {
           console.log(response);
-
+          const modifiedCollectDocs = response.data.CollectDocs.map(doc => {
+            console.log(doc.ID);
+            console.log(doc.DocId);
+            doc.ID = doc.DocId; // 将元素中的 ID 值替换为 DocId 值
+            return doc; // 返回修改后的元素
+          });
           allDoc.value = response.data.PostDocs;
-          allCollect.value = response.data.CollectDocs;
+          allCollect.value = modifiedCollectDocs;
           console.log(allCollect.value.length);
           allDoc.value.forEach((elem) => {
             // elem.page =
