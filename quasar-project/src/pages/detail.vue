@@ -13,7 +13,7 @@
         />
         </div>
         <div>
-        <q-chip >{{ watchflag }}</q-chip>
+        <!--<q-chip >{{ watchflag }}</q-chip> -->
         <!-- <q-chip >{{ thisMine }}</q-chip> -->
         <!-- <q-chip v-if= "watchflag === 'true'" icon="today">Create Data: {{ date }}</q-chip> -->
         <!-- <q-chip >{{ watchflag }}</q-chip> -->

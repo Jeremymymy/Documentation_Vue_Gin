@@ -285,9 +285,15 @@ export default {
       axios
         .get('http://localhost:8000/TSMC/users/getMyDetail')
         .then(response => {
-          console.log(response);
-
-          allMyCollect.value = response.data.CollectDocs;
+          console.log(response.data.CollectDocs);
+          const modifiedCollectDocs = response.data.CollectDocs.map(doc => {
+            console.log(doc.ID);
+            console.log(doc.DocId);
+            doc.ID = doc.DocId; // 将元素中的 ID 值替换为 DocId 值
+            return doc; // 返回修改后的元素
+          });
+          allMyCollect.value = modifiedCollectDocs;
+          console.log(allMyCollect.value);
           console.log(allMyCollect.value.length);
           // LocalStorage.set('userCollect', allMyCollect.value);
 
@@ -300,11 +306,17 @@ export default {
     function createCollect (ff) {
       ff.favorite = !ff.favorite;
       if (ff.favorite === true) {
+        let collectedData;
         axios
           .get(`http://localhost:8000/TSMC/docs/collectDoc/${ff.ID}`)
           .then(response => {
-            console.log(response);
-            allMyCollect.value = response.data.Collect
+            console.log(response.data);
+            collectedData = response.data.Collect;
+            console.log(response.data.Collect);
+            console.log(collectedData);
+            collectedData.ID = response.data.Collect.DocId
+            console.log(collectedData.ID);
+            allMyCollect.value = collectedData
             console.log(allMyCollect.value);
             getAllUserInfo();
           })
