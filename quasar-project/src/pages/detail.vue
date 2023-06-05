@@ -13,8 +13,12 @@
         />
         </div>
         <div>
-        <q-chip v-show="watchflag" icon="today">Create Data: {{ date }}</q-chip>
-        <q-chip v-show="watchflag" icon="person">Author: {{ author }}</q-chip>
+        <q-chip >{{ watchflag }}</q-chip>
+        <!-- <q-chip >{{ thisMine }}</q-chip> -->
+        <!-- <q-chip v-if= "watchflag === 'true'" icon="today">Create Data: {{ date }}</q-chip> -->
+        <!-- <q-chip >{{ watchflag }}</q-chip> -->
+        <q-chip v-show= "watchflag" icon="today">Create Data: {{ date }}</q-chip>
+        <q-chip v-show= "watchflag" icon="person">Author: {{ author }}</q-chip>
         <q-chip icon="today">Update Data: {{ updateDate }}</q-chip>
         <q-chip icon="person">Updater: {{ updater }}</q-chip>
         <q-chip icon="update">Version: {{ version }}</q-chip>
@@ -61,8 +65,10 @@
             {{ content }}
           </div>
           </div>
-          <div v-show="watchflag" class="row justify-center">
+          <div v-show= "watchflag"  class="row justify-center">
+          <!-- <p v-show="thisMine"> -->
             <q-btn v-show="!editflag" unelevated rounded glossy  icon="edit" label="編輯" color="black" type="submit" @click="edit" />
+          <!-- </p> -->
             <q-btn v-show="editflag" unelevated rounded glossy label="取消編輯" color="black" type="submit" @click="edit" />
           </div>
         </div>
@@ -76,16 +82,18 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
 import axios from 'axios';
-import { useQuasar } from 'quasar'
+import { useQuasar, LocalStorage } from 'quasar'
 export default {
   setup () {
     const route = useRoute()
+    const userInfo = LocalStorage.getItem('userInfo');
     console.log(route.query.docID);
     console.log(route.query.ver);
     const $q = useQuasar()
     const title = ref('');
     const content = ref('');
     const author = ref('');
+    const authorid = ref('');
     const updater = ref('');
     const date = ref('');
     const updateDate = ref('');
@@ -95,7 +103,7 @@ export default {
     const watchflag = ref(false); // 從版控頁來的不能編輯
 
     const dContent = ref(content.value);
-
+    console.log(watchflag.value)
     function getDoc (id) {
       axios
         .get(`http://localhost:8000/TSMC/docs/getDoc/${id}`)
@@ -105,10 +113,25 @@ export default {
           title.value = response.data.Title
           content.value = response.data.Content
           author.value = response.data.AuthorName
+          // console.log(response.data.AuthorId);
+          authorid.value = response.data.AuthorId
+          console.log(authorid.value);
           date.value = response.data.CreatedAt
           updateDate.value = response.data.UpdatedAt
           belong.value = response.data.Belong
           dContent.value = response.data.Content
+          console.log(userInfo.EmployeeId);
+          if (authorid.value === userInfo.EmployeeId) {
+          // if (route.query.ver === undefined) {
+            watchflag.value = true;
+            getDocVersion(thisDoc.value);
+            console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
+          } else {
+          // version.value = route.query.ver;
+            watchflag.value = false;
+            getDocWithVersion(thisDoc.value, version.value);
+            console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
+          }
         })
         .catch(error => {
           console.error(error);
@@ -150,7 +173,6 @@ export default {
           console.error(error);
         });
     };
-
     function edit () {
       editflag.value = !editflag.value;
     };
@@ -186,20 +208,25 @@ export default {
           console.error(error);
         });
     };
-
+    // const thisMine = ref(route.query.docmine);
+    console.log(watchflag.value)
     const thisDoc = ref(route.query.docID);
+    console.log(thisDoc)
     getDoc(thisDoc.value);
-    if (route.query.ver === undefined) {
-      watchflag.value = true;
-      getDocVersion(thisDoc.value);
-      console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
-    } else {
-      version.value = route.query.ver;
-      watchflag.value = false;
-      getDocWithVersion(thisDoc.value, version.value);
-      console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
-    }
-
+    // console.log(thisMine)
+    // if (authorid.value === userInfo.EmployeeId) {
+    // // if (route.query.ver === undefined) {
+    //   watchflag.value = true;
+    //   getDocVersion(thisDoc.value);
+    //   console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
+    // } else {
+    //   // version.value = route.query.ver;
+    //   watchflag.value = false;
+    //   getDocWithVersion(thisDoc.value, version.value);
+    //   console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
+    // }
+    console.log(watchflag.value)
+    console.log(editflag.value)
     return {
       expanded: ref(false),
       title,
@@ -214,6 +241,7 @@ export default {
       edit,
       dContent,
       thisDoc,
+      authorid,
       updateDoc,
       watchflag
     }

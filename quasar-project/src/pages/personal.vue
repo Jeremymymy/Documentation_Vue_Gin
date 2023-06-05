@@ -120,7 +120,7 @@
           </div>
         </q-card-section>
         <q-card-actions align="center">
-            <router-link :to="{path: '/detail', query: {docID: item.ID }}">
+          <router-link :to="{path: '/detail', query: {docID: item.ID }}">
               <q-btn unelevated rounded glossy color="primary" icon="description" label = "文章內容"/>
             </router-link>
 
@@ -157,7 +157,7 @@
           /> -->
           <q-card-actions align="between">
             <q-btn flat round icon="favorite" color= 'red' @click="deleteCollect(item)"/>
-            <q-btn flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog"/>
+            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog"/>
           </q-card-actions>
 
           <q-card-section>
@@ -169,7 +169,7 @@
             </div>
           </q-card-section>
           <q-card-actions align="center">
-            <router-link :to="{path: '/detail', query: {docID: item.DocId }}">
+            <router-link :to="{path: '/detail', query: {docID: item.ID }}">
               <q-btn unelevated rounded glossy color="primary" icon="description" label = "文章內容"/>
             </router-link>
               <q-dialog v-model="item.deleteDialog">

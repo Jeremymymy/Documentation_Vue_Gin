@@ -95,8 +95,9 @@
       <div class=" q-pa-md section-card items-start q-gutter-md row justify-center"  align="center">
       <q-card class="my-card col" flat bordered  v-for="item in paginatedPublicDoc()" :key="item.ID">
 
-        <q-card-actions align="left">
+        <q-card-actions align="between">
            <q-btn flat round icon="favorite" :color="item.favorite ? 'red' : 'gray'" @click="createCollect(item)"/>
+           <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" ></q-btn>
         </q-card-actions>
 
         <q-card-section>
@@ -114,7 +115,6 @@
               <q-btn unelevated rounded glossy color="primary" icon="description" label = "文章內容"/>
             </router-link>
 
-            <q-btn v-show="item.mine" flat round color="teal" icon="delete" @click="item.deleteDialog = !item.deleteDialog" >
               <q-dialog v-model="item.deleteDialog">
                 <q-card class="my-card-info-fix q-pa-md" align="center">
                   <q-card-section>
@@ -125,7 +125,6 @@
                 <q-btn flat round v-close-popup label="取消" color="black"></q-btn>
                 </q-card>
               </q-dialog>
-            </q-btn>
         </q-card-actions>
       </q-card>
       </div>
