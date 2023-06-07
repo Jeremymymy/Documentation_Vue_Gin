@@ -19,6 +19,7 @@ func AddDocRouter(rg *gin.RouterGroup) {
 		docsRoute.GET("/getDepartmentDocs/:department", services.GetDepartmentDocs)
 		docsRoute.GET("/getDocAllVers/:docId", services.GetDocByIdWithVersPreload)
 		docsRoute.GET("/getAllVers/", services.GetAllVers)
+		docsRoute.GET("/getDocVer/:verId", services.GetDocVer)
 		docsRoute.GET("/collectDoc/:docId", services.CollectDoc)
 		docsRoute.GET("/getAllCollects/", services.GetAllCollects)
 		docsRoute.DELETE("/deleteDoc/:docId", services.DeleteDoc)

@@ -66,6 +66,16 @@ func GetAllVers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, vers)
 }
 
+func GetDocVer(ctx *gin.Context) {
+	verId, _ := strconv.Atoi(ctx.Param("verId"))
+	ver, err := models.GetVerById(uint(verId))
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, "Error : "+err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, ver)
+}
+
 // Get Document by DocId
 func GetDocById(ctx *gin.Context) {
 	docId, _ := strconv.Atoi(ctx.Param("docId"))
