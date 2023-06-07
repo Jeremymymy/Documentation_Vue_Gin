@@ -15,7 +15,7 @@
               <div class="text-h6 col q-ma-md text-center">{{ item.UpdatedAt }}</div>
               <!-- <div class="text-h5 col q-ma-md text-center">{{ item[3] }}</div> -->
               <div class="col q-ma-md text-center">
-                <router-link :to="{path: '/detail', query: {docID: item.DocId, ver: item.Index }}">
+                <router-link :to="{path: '/detail', query: {docID: item.DocId, ver: item.ID }}">
                   <q-btn color="white" text-color="black" label="View" />
                 </router-link>
               </div>
