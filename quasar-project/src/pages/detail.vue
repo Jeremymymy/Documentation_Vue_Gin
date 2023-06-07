@@ -21,7 +21,7 @@
         <q-chip v-show= "watchflag" icon="person">Author: {{ author }}</q-chip>
         <q-chip icon="today">Update Data: {{ updateDate }}</q-chip>
         <q-chip icon="person">Updater: {{ updater }}</q-chip>
-        <q-chip icon="update">Version: {{ version }}</q-chip>
+        <!-- <q-chip icon="update">Version: {{ version }}</q-chip> -->
         </div><br />
 
         <router-link :to="{path: '/MyHistory', query: {docID: thisDoc }}">
@@ -95,6 +95,7 @@ export default {
     const author = ref('');
     const authorid = ref('');
     const updater = ref('');
+    const thisver = ref('');
     const date = ref('');
     const updateDate = ref('');
     const belong = ref('');
@@ -104,38 +105,73 @@ export default {
 
     const dContent = ref(content.value);
     console.log(watchflag.value)
-    function getDoc (id) {
-      axios
-        .get(`http://localhost:8000/TSMC/docs/getDoc/${id}`)
-        .then(response => {
-          console.log(response);
-          console.log(response.data);
-          title.value = response.data.Title
-          content.value = response.data.Content
-          author.value = response.data.AuthorName
-          // console.log(response.data.AuthorId);
-          authorid.value = response.data.AuthorId
-          console.log(authorid.value);
-          date.value = response.data.CreatedAt
-          updateDate.value = response.data.UpdatedAt
-          belong.value = response.data.Belong
-          dContent.value = response.data.Content
-          console.log(userInfo.EmployeeId);
-          if (authorid.value === userInfo.EmployeeId) {
-          // if (route.query.ver === undefined) {
-            watchflag.value = true;
-            getDocVersion(thisDoc.value);
-            console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
-          } else {
-          // version.value = route.query.ver;
-            watchflag.value = false;
-            getDocWithVersion(thisDoc.value, version.value);
-            console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+    function getDoc (id, ver) {
+      // axios
+      console.log(id);
+      console.log(ver.value);
+      if (ver.value !== undefined) {
+        axios.get(`http://localhost:8000/TSMC/docs/getDocVer/${ver.value}`)
+          .then(response => {
+            console.log(response);
+            console.log(response.data);
+            title.value = response.data.Title
+            content.value = response.data.Content
+            author.value = response.data.AuthorName
+            // console.log(response.data.AuthorId);
+            authorid.value = response.data.AuthorId
+            console.log(authorid.value);
+            date.value = response.data.CreatedAt
+            updateDate.value = response.data.UpdatedAt
+            belong.value = response.data.Belong
+            dContent.value = response.data.Content
+            console.log(userInfo.EmployeeId);
+            if (authorid.value === userInfo.EmployeeId) {
+            // if (route.query.ver === undefined) {
+              watchflag.value = true;
+              getDocVersion(thisDoc.value);
+              console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
+            } else {
+            // version.value = route.query.ver;
+              watchflag.value = false;
+              getDocWithVersion(thisDoc.value, version.value);
+              console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        axios.get(`http://localhost:8000/TSMC/docs/getDoc/${id}`)
+          .then(response => {
+            console.log(response);
+            console.log(response.data);
+            title.value = response.data.Title
+            content.value = response.data.Content
+            author.value = response.data.AuthorName
+            // console.log(response.data.AuthorId);
+            authorid.value = response.data.AuthorId
+            console.log(authorid.value);
+            date.value = response.data.CreatedAt
+            updateDate.value = response.data.UpdatedAt
+            belong.value = response.data.Belong
+            dContent.value = response.data.Content
+            console.log(userInfo.EmployeeId);
+            if (authorid.value === userInfo.EmployeeId) {
+            // if (route.query.ver === undefined) {
+              watchflag.value = true;
+              getDocVersion(thisDoc.value);
+              console.log('PPPPPPPPPPPPPPPPPPPPPPPPPP')
+            } else {
+            // version.value = route.query.ver;
+              watchflag.value = false;
+              getDocWithVersion(thisDoc.value, version.value);
+              console.log('HEREEEEEEEEEEEEEEEEEEEEEEEE')
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     };
     function getDocVersion (id) {
       axios
@@ -145,8 +181,9 @@ export default {
           console.log(response.data);
 
           const index = response.data.Vers.length
-          version.value = index
+          // version.value = index
           updater.value = response.data.Vers[index - 1].UpdaterName
+          version.value = response.data.Vers[index - 1].ID
           // updateDate.value = response.data.Vers[index - 1].UpdatedAt
           // console.log(updater.value);
         })
@@ -188,7 +225,7 @@ export default {
           console.log(response);
           console.log(response.data);
 
-          getDoc(thisDoc.value);
+          getDoc(thisDoc.value, thisver.value);
           getDocVersion(thisDoc.value);
           // if (route.query.ver === undefined) {
           //   getDocVersion(thisDoc.value);
@@ -211,8 +248,13 @@ export default {
     // const thisMine = ref(route.query.docmine);
     console.log(watchflag.value)
     const thisDoc = ref(route.query.docID);
+    if (route.query.ver === undefined) {
+      thisver.value = version.value
+    } else {
+      thisver.value = ref(route.query.ver);
+    }
     console.log(thisDoc)
-    getDoc(thisDoc.value);
+    getDoc(thisDoc.value, thisver.value);
     // console.log(thisMine)
     // if (authorid.value === userInfo.EmployeeId) {
     // // if (route.query.ver === undefined) {
