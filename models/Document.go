@@ -77,6 +77,12 @@ func CreateVer(ver Version) (Version, error) {
 	return ver, err
 }
 
+func GetVerById(verId uint) (Version, error) {
+	var ver Version
+	err := dbconnect.MySQLcon.Table("versions").Where("id = ?", verId).First(&ver).Error
+	return ver, err
+}
+
 func DocAddNewVer(doc Document, newVer Version) error {
 	doc.Vers = append(doc.Vers, newVer)
 	err := dbconnect.MySQLcon.Save(&doc).Error
