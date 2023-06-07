@@ -2,3 +2,4 @@
 .DBconnect
 DBconnect.go
 mysql_data/*
+.env
